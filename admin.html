@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel - Weblith</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+
+  <!-- LOGIN -->
+  <div class="login-overlay" id="loginOverlay">
+    <div class="login-card">
+      <div class="login-logo">&#9643;</div>
+      <h1 class="login-title">Weblith Admin</h1>
+      <p class="login-subtitle">Enter your password to continue</p>
+      <div class="field">
+        <label class="field-label" for="adminPass">Password</label>
+        <div class="input-wrapper">
+          <span class="input-icon">&#128274;</span>
+          <input class="input" type="password" id="adminPass" placeholder="Enter admin password" onkeydown="if(event.key==='Enter') adminLogin()" />
+          <button class="toggle-pass" type="button" onclick="togglePass()" title="Show/Hide">&#128065;</button>
+        </div>
+        <span class="field-error" id="loginError"></span>
+      </div>
+      <button class="btn-primary" id="loginBtn" onclick="adminLogin()">
+        <span id="loginBtnText">Login to Admin Panel</span>
+        <span id="loginLoader" style="display:none;" class="loader-dots"><span></span><span></span><span></span></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ADMIN PANEL -->
+  <div class="admin-wrapper" id="adminWrapper" style="display:none;">
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon">&#9643;</div>
+        <span>Web<span class="logo-accent">lith</span></span>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="#" class="nav-item active" onclick="showSection('leads',this);return false;">
+          <span class="nav-icon">&#128101;</span> All Leads
+        </a>
+        <a href="#" class="nav-item" onclick="showSection('stats',this);return false;">
+          <span class="nav-icon">&#128202;</span> Statistics
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="supabase-badge">&#128279; Supabase Connected</div>
+        <button class="logout-btn" onclick="adminLogout()">&#128682; Logout</button>
+      </div>
+    </aside>
+
+    <main class="admin-main">
+      <!-- LEADS SECTION -->
+      <section class="admin-section active" id="section-leads">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">All Leads</h2>
+            <p class="section-sub" id="leadCountText">Loading...</p>
+          </div>
+          <div class="header-actions">
+            <input type="text" class="search-input" id="searchInput" placeholder="&#128269; Search leads..." oninput="filterLeads()" />
+            <select class="filter-select" id="filterType" onchange="filterLeads()">
+              <option value="">All Types</option>
+              <option value="Business Website">Business Website</option>
+              <option value="Portfolio">Portfolio</option>
+              <option value="Dynamic Website">Dynamic Website</option>
+              <option value="E-commerce">E-commerce</option>
+            </select>
+            <button class="btn-export" onclick="exportCSV()">&#128229; Export CSV</button>
+            <button class="btn-refresh" onclick="loadLeads()">&#8635; Refresh</button>
+            <button class="btn-danger-sm" onclick="clearAllLeads()">&#128465; Clear All</button>
+          </div>
+        </div>
+
+        <div id="tableLoadingState" class="loading-state">
+          <div class="spinner"></div>
+          <p>Fetching leads from Supabase...</p>
+        </div>
+
+        <div class="leads-table-wrap" id="leadsTableWrap" style="display:none;">
+          <table class="leads-table" id="leadsTable">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>WhatsApp</th>
+                <th>Email</th>
+                <th>Website Type</th>
+                <th>Budget</th>
+                <th>Message</th>
+                <th>Date</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="leadsBody"></tbody>
+          </table>
+          <div class="empty-state" id="emptyState" style="display:none;">
+            <div class="empty-icon">&#128203;</div>
+            <p>No leads yet. Share your form link to start collecting leads!</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- STATS SECTION -->
+      <section class="admin-section" id="section-stats">
+        <div class="section-header">
+          <h2 class="section-title">Statistics</h2>
+          <p class="section-sub">Overview of all your leads</p>
+        </div>
+        <div class="stats-grid" id="statsGrid">
+          <div class="stat-card skeleton"></div>
+          <div class="stat-card skeleton"></div>
+          <div class="stat-card skeleton"></div>
+          <div class="stat-card skeleton"></div>
+        </div>
+        <div class="chart-section">
+          <h3 class="chart-title">Leads by Website Type</h3>
+          <div class="chart-bars" id="chartBars"><p style="color:#64748b;font-size:0.85rem;">No data yet.</p></div>
+        </div>
+        <div class="chart-section">
+          <h3 class="chart-title">Recent Leads (Last 7 Days)</h3>
+          <div class="chart-bars" id="budgetBars"><p style="color:#64748b;font-size:0.85rem;">No data yet.</p></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>
