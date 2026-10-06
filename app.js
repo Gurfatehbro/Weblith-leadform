@@ -112,12 +112,13 @@ async function trackMetaSubscribeEvent(lead, eventId) {
   // 1. Browser Meta Pixel
   if (typeof fbq === 'function') {
     try {
+      fbq('set', 'testEventCode', 'TEST50055');
       fbq('track', 'Subscribe', {
         content_name: lead.website_type || 'Website Inquiry',
         currency: 'INR',
         value: 0
       }, { eventID: eventId });
-      console.log('Meta Pixel Browser: Subscribe event fired with eventID:', eventId);
+      console.log('Meta Pixel Browser: Subscribe event fired (Pixels: 1106298835129618 & 1483479293829689) with eventID:', eventId);
     } catch (e) {
       console.warn('Pixel browser error:', e);
     }
@@ -129,7 +130,7 @@ async function trackMetaSubscribeEvent(lead, eventId) {
     const res = await fetch('/api/subscribe', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...lead, event_id: eventId })
+      body: JSON.stringify({ ...lead, event_id: eventId, test_event_code: 'TEST50055' })
     });
     if (res.ok) {
       const data = await res.json();
@@ -169,7 +170,8 @@ async function trackMetaSubscribeEvent(lead, eventId) {
             currency: 'INR',
             value: 0
           }
-        }]
+        }],
+        test_event_code: 'TEST50055'
       };
 
       await fetch(`https://graph.facebook.com/v19.0/${META_PIXEL_ID}/events?access_token=${META_CAPI_TOKEN}`, {

@@ -69,7 +69,7 @@ function sendMetaCapiSubscribe(lead, req) {
       if (fn) userData.fn = [fn];
     }
 
-    const payload = JSON.stringify({
+    const payloadObj = {
       data: [
         {
           event_name: 'Subscribe',
@@ -85,7 +85,14 @@ function sendMetaCapiSubscribe(lead, req) {
           }
         }
       ]
-    });
+    };
+
+    const testCode = lead.test_event_code || 'TEST50055';
+    if (testCode) {
+      payloadObj.test_event_code = testCode;
+    }
+
+    const payload = JSON.stringify(payloadObj);
 
     const options = {
       hostname: 'graph.facebook.com',
