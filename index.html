@@ -3,419 +3,199 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Weblith - Premium Website Development Agency</title>
-  <meta name="description" content="Weblith builds premium websites for businesses. Business websites, portfolios, e-commerce & dynamic web apps. Get a free quote today."/>
+  <title>Get Free Quote - Weblith</title>
+  <meta name="description" content="Fill our quick 2-step form and get a custom website quote from Weblith within 24 hours."/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="landing.css"/>
+  <link rel="stylesheet" href="form.css"/>
 </head>
 <body>
-
-  <!-- CANVAS BG -->
   <canvas id="bgCanvas"></canvas>
   <div class="orb orb-1"></div>
   <div class="orb orb-2"></div>
 
-  <!-- ===== NAVBAR ===== -->
-  <nav class="navbar" id="navbar">
-    <div class="nav-inner">
-      <a href="index.html" class="nav-logo">
+  <div class="page-wrap">
+    <!-- NAV -->
+    <nav class="form-nav">
+      <a href="/form" class="nav-logo">
         <div class="logo-box">&#9643;</div>
         Web<span>lith</span>
       </a>
-      <ul class="nav-links" id="navLinks">
-        <li><a href="#services">Services</a></li>
-        <li><a href="#why-us">Why Us</a></li>
-        <li><a href="#portfolio">Work</a></li>
-        <li><a href="#testimonials">Reviews</a></li>
-        <li><a href="form.html" class="nav-cta">Get Free Quote &#8594;</a></li>
-      </ul>
-      <button class="hamburger" id="hamburger" onclick="toggleMenu()">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-  </nav>
+      <div class="nav-actions">
+        <div class="nav-badge"><span class="live-dot"></span> Fast 24h WhatsApp Response</div>
+        <a href="/admin" class="nav-admin-link" title="Admin Panel">&#128274; Admin</a>
+      </div>
+    </nav>
 
-  <!-- ===== HERO ===== -->
-  <section class="hero" id="hero">
-    <div class="hero-content">
-      <div class="hero-badge">
-        <span class="live-dot"></span> Now Accepting New Clients
-      </div>
-      <h1 class="hero-title">
-        We Build Websites<br/>That <span class="grad-text">Convert & Scale</span>
-      </h1>
-      <p class="hero-sub">
-        From stunning business websites to powerful e-commerce stores —
-        Weblith delivers premium web experiences that grow your business.
-      </p>
-      <div class="hero-btns">
-        <a href="form.html" class="btn-primary-lg">Get Free Quote &#8594;</a>
-        <a href="#portfolio" class="btn-ghost-lg">View Our Work</a>
-      </div>
-      <div class="hero-stats">
-        <div class="stat"><span class="stat-num">100+</span><span class="stat-label">Websites Built</span></div>
-        <div class="stat-div"></div>
-        <div class="stat"><span class="stat-num">98%</span><span class="stat-label">Client Satisfaction</span></div>
-        <div class="stat-div"></div>
-        <div class="stat"><span class="stat-num">24h</span><span class="stat-label">Response Time</span></div>
-      </div>
-    </div>
-    <div class="hero-visual">
-      <div class="browser-mock">
-        <div class="browser-bar">
-          <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
-          <div class="url-bar">weblith.com</div>
+    <!-- FORM PAGE -->
+    <main class="form-main">
+      <div class="form-left">
+        <div class="form-hero-tag">
+          <span class="live-dot"></span> Free Consultation
         </div>
-        <div class="browser-body">
-          <div class="mock-hero-block"></div>
-          <div class="mock-nav"></div>
-          <div class="mock-cards">
-            <div class="mock-card c1"></div>
-            <div class="mock-card c2"></div>
-            <div class="mock-card c3"></div>
-          </div>
-          <div class="mock-btn-row">
-            <div class="mock-btn"></div>
-          </div>
-        </div>
-      </div>
-      <div class="floating-tag t1">&#9889; Fast Delivery</div>
-      <div class="floating-tag t2">&#127919; Conversion Focused</div>
-      <div class="floating-tag t3">&#128172; 24/7 Support</div>
-    </div>
-  </section>
+        <h1 class="form-title">Let's Build Your <span class="grad-text">Dream Website</span></h1>
+        <p class="form-desc">Fill this quick form — we'll contact you on WhatsApp within <strong>24 hours</strong> with a custom quote.</p>
 
-  <!-- ===== TRUSTED BY ===== -->
-  <section class="trusted">
-    <p class="trusted-label">Trusted by businesses across India</p>
-    <div class="trusted-logos">
-      <div class="t-logo">StartupXYZ</div>
-      <div class="t-logo">FashionHub</div>
-      <div class="t-logo">TechGrowth</div>
-      <div class="t-logo">ShopEasy</div>
-      <div class="t-logo">ConsultPro</div>
-      <div class="t-logo">EduLearn</div>
-    </div>
-  </section>
+        <div class="form-benefits">
+          <div class="benefit-item">&#9989; 100% Free Consultation</div>
+          <div class="benefit-item">&#9989; No Hidden Charges</div>
+          <div class="benefit-item">&#9989; Response in 24 Hours</div>
+          <div class="benefit-item">&#9989; Custom Built Websites</div>
+        </div>
 
-  <!-- ===== SERVICES ===== -->
-  <section class="section" id="services">
-    <div class="section-inner">
-      <div class="section-tag">What We Build</div>
-      <h2 class="section-title">Services We Offer</h2>
-      <p class="section-sub">Every website we build is custom-designed, mobile-first, and optimized for performance.</p>
-      <div class="services-grid">
-        <div class="service-card">
-          <div class="service-icon">&#127970;</div>
-          <h3>Business Website</h3>
-          <p>Professional websites that establish your brand online and generate leads 24/7.</p>
-          <ul class="service-list">
-            <li>Custom Design</li>
-            <li>Mobile Responsive</li>
-            <li>SEO Optimized</li>
-            <li>Contact Forms</li>
-          </ul>
-          <div class="service-price">Starting &#8377;5,000</div>
-        </div>
-        <div class="service-card featured">
-          <div class="featured-tag">Most Popular</div>
-          <div class="service-icon">&#128717;</div>
-          <h3>E-commerce Store</h3>
-          <p>Full-featured online stores with payment gateway, inventory, and order management.</p>
-          <ul class="service-list">
-            <li>Payment Integration</li>
-            <li>Product Management</li>
-            <li>Order Tracking</li>
-            <li>Admin Dashboard</li>
-          </ul>
-          <div class="service-price">Starting &#8377;15,000</div>
-        </div>
-        <div class="service-card">
-          <div class="service-icon">&#127912;</div>
-          <h3>Portfolio Website</h3>
-          <p>Stunning portfolio sites that showcase your work and get you more clients.</p>
-          <ul class="service-list">
-            <li>Gallery & Projects</li>
-            <li>Animations</li>
-            <li>Contact Integration</li>
-            <li>Blog Support</li>
-          </ul>
-          <div class="service-price">Starting &#8377;4,000</div>
-        </div>
-        <div class="service-card">
-          <div class="service-icon">&#9889;</div>
-          <h3>Dynamic Website</h3>
-          <p>Custom web apps with CMS, user authentication, databases, and APIs.</p>
-          <ul class="service-list">
-            <li>Custom CMS</li>
-            <li>User Login System</li>
-            <li>Database Integration</li>
-            <li>API Development</li>
-          </ul>
-          <div class="service-price">Starting &#8377;25,000</div>
+        <div class="mini-testimonial">
+          <div class="mini-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p>"Weblith built our store in 10 days. Sales tripled!"</p>
+          <span>— Rahul M., FashionHub Delhi</span>
         </div>
       </div>
-    </div>
-  </section>
 
-  <!-- ===== WHY US ===== -->
-  <section class="section alt-bg" id="why-us">
-    <div class="section-inner">
-      <div class="section-tag">Why Weblith</div>
-      <h2 class="section-title">Built Different. Built Better.</h2>
-      <p class="section-sub">We don't just code websites — we build digital experiences that drive real results.</p>
-      <div class="why-grid">
-        <div class="why-card">
-          <div class="why-icon">&#128640;</div>
-          <h3>Fast Delivery</h3>
-          <p>Most projects delivered in 7-14 days. We respect your timeline and keep you updated throughout.</p>
-        </div>
-        <div class="why-card">
-          <div class="why-icon">&#128241;</div>
-          <h3>Mobile-First Design</h3>
-          <p>Every website is designed for mobile first — because 70% of your visitors are on phones.</p>
-        </div>
-        <div class="why-card">
-          <div class="why-icon">&#128200;</div>
-          <h3>SEO Ready</h3>
-          <p>Built with proper SEO structure from day one so Google can find and rank your website.</p>
-        </div>
-        <div class="why-card">
-          <div class="why-icon">&#128172;</div>
-          <h3>24/7 Support</h3>
-          <p>We're always available on WhatsApp. Quick fixes, updates, and answers — whenever you need.</p>
-        </div>
-        <div class="why-card">
-          <div class="why-icon">&#128176;</div>
-          <h3>Affordable Pricing</h3>
-          <p>Premium quality at honest prices. No hidden charges. Everything is discussed upfront.</p>
-        </div>
-        <div class="why-card">
-          <div class="why-icon">&#128736;</div>
-          <h3>Custom Built</h3>
-          <p>No templates. Every website is built from scratch, tailored exactly to your business needs.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== HOW IT WORKS ===== -->
-  <section class="section" id="process">
-    <div class="section-inner">
-      <div class="section-tag">Our Process</div>
-      <h2 class="section-title">How It Works</h2>
-      <p class="section-sub">Simple, transparent, and stress-free — from your first message to launch day.</p>
-      <div class="steps-row">
-        <div class="step-item">
-          <div class="step-num">01</div>
-          <h3>Fill the Form</h3>
-          <p>Tell us about your project — type, budget, and requirements in 2 minutes.</p>
-        </div>
-        <div class="step-arrow">&#8594;</div>
-        <div class="step-item">
-          <div class="step-num">02</div>
-          <h3>Free Consultation</h3>
-          <p>We contact you within 24 hours on WhatsApp for a free discussion.</p>
-        </div>
-        <div class="step-arrow">&#8594;</div>
-        <div class="step-item">
-          <div class="step-num">03</div>
-          <h3>Design & Build</h3>
-          <p>We design and develop your website with regular progress updates.</p>
-        </div>
-        <div class="step-arrow">&#8594;</div>
-        <div class="step-item">
-          <div class="step-num">04</div>
-          <h3>Launch &#127881;</h3>
-          <p>Your website goes live! We handle hosting setup and domain too.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== PORTFOLIO ===== -->
-  <section class="section alt-bg" id="portfolio">
-    <div class="section-inner">
-      <div class="section-tag">Our Work</div>
-      <h2 class="section-title">Recent Projects</h2>
-      <p class="section-sub">A glimpse of websites we have built for our happy clients.</p>
-      <div class="portfolio-grid">
-        <div class="portfolio-card">
-          <div class="port-img pi-1">
-            <div class="port-overlay">
-              <span class="port-type">E-commerce</span>
+      <div class="form-right">
+        <div class="form-card" id="formCard">
+          <!-- STEP INDICATORS -->
+          <div class="step-indicators">
+            <div class="step-indicator active" id="sdot1">
+              <div class="step-dot">1</div><span>Your Info</span>
+            </div>
+            <div class="step-line" id="sline1"></div>
+            <div class="step-indicator" id="sdot2">
+              <div class="step-dot">2</div><span>Project</span>
+            </div>
+            <div class="step-line" id="sline2"></div>
+            <div class="step-indicator" id="sdot3">
+              <div class="step-dot">&#10003;</div><span>Done!</span>
             </div>
           </div>
-          <div class="port-info">
-            <h4>FashionHub Store</h4>
-            <p>Online clothing store with 500+ products, Razorpay integration</p>
-          </div>
-        </div>
-        <div class="portfolio-card">
-          <div class="port-img pi-2">
-            <div class="port-overlay">
-              <span class="port-type">Business Website</span>
-            </div>
-          </div>
-          <div class="port-info">
-            <h4>ConsultPro Agency</h4>
-            <p>Lead generation site with CRM integration &amp; booking system</p>
-          </div>
-        </div>
-        <div class="portfolio-card">
-          <div class="port-img pi-3">
-            <div class="port-overlay">
-              <span class="port-type">Portfolio</span>
-            </div>
-          </div>
-          <div class="port-info">
-            <h4>Aryan Design Studio</h4>
-            <p>Creative portfolio with animated galleries and contact system</p>
-          </div>
-        </div>
-        <div class="portfolio-card">
-          <div class="port-img pi-4">
-            <div class="port-overlay">
-              <span class="port-type">Dynamic Web App</span>
-            </div>
-          </div>
-          <div class="port-info">
-            <h4>EduLearn Platform</h4>
-            <p>Online learning platform with courses, payments &amp; certificates</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- ===== TESTIMONIALS ===== -->
-  <section class="section" id="testimonials">
-    <div class="section-inner">
-      <div class="section-tag">Client Reviews</div>
-      <h2 class="section-title">What Our Clients Say</h2>
-      <div class="testimonials-grid">
-        <div class="testi-card">
-          <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-          <p>"Weblith built our e-commerce store in just 10 days. Sales went up 3x after launch. Absolutely brilliant team!"</p>
-          <div class="testi-author">
-            <div class="testi-avatar">R</div>
-            <div>
-              <strong>Rahul Mehta</strong>
-              <span>FashionHub, Delhi</span>
+          <!-- STEP 1 -->
+          <div class="form-step active" id="step1">
+            <div class="step-header">
+              <h2 class="step-title">Step 1 of 2 &mdash; Your Details</h2>
+              <p class="step-desc">We will contact you with a custom quote.</p>
+            </div>
+            <div class="field-group">
+              <div class="field">
+                <label class="field-label" for="inp-name">Full Name *</label>
+                <div class="input-wrapper">
+                  <span class="input-icon">&#128100;</span>
+                  <input class="input" type="text" id="inp-name" placeholder="Aapka poora naam"/>
+                </div>
+                <span class="field-error" id="err-name"></span>
+              </div>
+              <div class="field">
+                <label class="field-label" for="inp-phone">Calling Number *</label>
+                <div class="input-wrapper">
+                  <span class="input-icon">&#128222;</span>
+                  <input class="input" type="tel" id="inp-phone" placeholder="+91 98765 43210"/>
+                </div>
+                <span class="field-error" id="err-phone"></span>
+              </div>
+            </div>
+            <div class="field-group">
+              <div class="field">
+                <label class="field-label" for="inp-wa">WhatsApp Number *</label>
+                <div class="input-wrapper">
+                  <span class="input-icon">&#128172;</span>
+                  <input class="input" type="tel" id="inp-wa" placeholder="+91 98765 43210"/>
+                </div>
+                <div class="same-row">
+                  <input type="checkbox" id="sameCheck" class="checkbox" onchange="handleSameCheck()"/>
+                  <label for="sameCheck" class="checkbox-label">Same as calling number</label>
+                </div>
+                <span class="field-error" id="err-wa"></span>
+              </div>
+              <div class="field">
+                <label class="field-label" for="inp-email">Email Address *</label>
+                <div class="input-wrapper">
+                  <span class="input-icon">&#9993;</span>
+                  <input class="input" type="email" id="inp-email" placeholder="yourname@email.com"/>
+                </div>
+                <span class="field-error" id="err-email"></span>
+              </div>
+            </div>
+            <button class="btn-primary" onclick="goToStep2()">
+              Next: Project Details &#8594;
+            </button>
+          </div>
+
+          <!-- STEP 2 -->
+          <div class="form-step" id="step2">
+            <div class="step-header">
+              <h2 class="step-title">Step 2 of 2 &mdash; Project Details</h2>
+              <p class="step-desc">Help us understand what you need.</p>
+            </div>
+            <div class="field">
+              <label class="field-label">Website Type *</label>
+              <div class="website-types" id="typeGroup">
+                <div class="type-card" onclick="selectType(this)" data-value="Business Website">
+                  <div class="type-emoji">&#127970;</div>
+                  <div class="type-name">Business Website</div>
+                  <div class="type-desc">Professional brand presence</div>
+                </div>
+                <div class="type-card" onclick="selectType(this)" data-value="Portfolio">
+                  <div class="type-emoji">&#127912;</div>
+                  <div class="type-name">Portfolio</div>
+                  <div class="type-desc">Showcase your work</div>
+                </div>
+                <div class="type-card" onclick="selectType(this)" data-value="Dynamic Website">
+                  <div class="type-emoji">&#9889;</div>
+                  <div class="type-name">Dynamic Website</div>
+                  <div class="type-desc">Custom features and CMS</div>
+                </div>
+                <div class="type-card" onclick="selectType(this)" data-value="E-commerce">
+                  <div class="type-emoji">&#128717;</div>
+                  <div class="type-name">E-commerce</div>
+                  <div class="type-desc">Online store and payments</div>
+                </div>
+              </div>
+              <span class="field-error" id="err-type"></span>
+            </div>
+            <div class="field">
+              <label class="field-label" for="inp-budget">Maximum Budget *</label>
+              <div class="budget-wrap">
+                <div class="input-wrapper">
+                  <span class="input-icon" style="color:#06b6d4;font-weight:700;font-size:1.1rem;">&#8377;</span>
+                  <input class="input" type="text" id="inp-budget" placeholder="e.g. 15000 or 5,000 - 15,000" inputmode="text"/>
+                </div>
+                <div class="chips">
+                  <button type="button" class="chip" onclick="setBudget(this,'Under Rs.5,000')">Under 5K</button>
+                  <button type="button" class="chip" onclick="setBudget(this,'Rs.5,000 - Rs.15,000')">5K-15K</button>
+                  <button type="button" class="chip" onclick="setBudget(this,'Rs.15,000 - Rs.30,000')">15K-30K</button>
+                  <button type="button" class="chip" onclick="setBudget(this,'Rs.30,000 - Rs.60,000')">30K-60K</button>
+                  <button type="button" class="chip" onclick="setBudget(this,'Rs.60,000+')">60K+</button>
+                </div>
+              </div>
+              <span class="field-error" id="err-budget"></span>
+            </div>
+            <div class="field">
+              <label class="field-label" for="inp-msg">About Your Business <span class="opt-tag">Optional</span></label>
+              <textarea class="input textarea" id="inp-msg" placeholder="E.g. I run a clothing store in Delhi and want to sell online..." rows="3"></textarea>
+            </div>
+            <div class="btn-row">
+              <button class="btn-secondary" onclick="goToStep1()">&#8592; Back</button>
+              <button class="btn-primary" id="submitBtn" onclick="submitForm()">
+                <span id="submitBtnText">Submit &amp; Get Quote &#10148;</span>
+                <span id="submitLoader" style="display:none;" class="ldots"><span></span><span></span><span></span></span>
+              </button>
             </div>
           </div>
-        </div>
-        <div class="testi-card featured-testi">
-          <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-          <p>"Professional, fast, and affordable. Our business website looks stunning and we are getting 5x more leads now. 100% recommend!"</p>
-          <div class="testi-author">
-            <div class="testi-avatar">P</div>
-            <div>
-              <strong>Priya Sharma</strong>
-              <span>ConsultPro Agency, Mumbai</span>
-            </div>
-          </div>
-        </div>
-        <div class="testi-card">
-          <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-          <p>"My portfolio got me 3 new clients in the first week! The animations and design are top notch. Very happy with Weblith."</p>
-          <div class="testi-author">
-            <div class="testi-avatar">A</div>
-            <div>
-              <strong>Aryan Singh</strong>
-              <span>Freelance Designer, Bangalore</span>
+
+          <!-- SUCCESS -->
+          <div class="form-step" id="stepSuccess">
+            <div class="success-wrap">
+              <div class="success-emoji">&#127881;</div>
+              <h2 class="success-title">You're All Set!</h2>
+              <p class="success-msg">We have received your request and will contact you within <strong>24 hours</strong> on your WhatsApp.</p>
+              <div class="success-box" id="successDetails"></div>
+              <p style="font-size:0.82rem;color:var(--muted);margin-top:1.25rem;">&#128172; Our team will reach out directly on your WhatsApp number.</p>
+              <button class="btn-primary" onclick="resetForm()" style="margin-top:1rem;">Submit Another Request</button>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </main>
+  </div>
 
-  <!-- ===== CTA ===== -->
-  <section class="cta-section">
-    <div class="cta-inner">
-      <h2 class="cta-title">Ready to Get Your Dream Website?</h2>
-      <p class="cta-sub">Fill our quick 2-step form and we will contact you within 24 hours with a custom quote.</p>
-      <a href="form.html" class="btn-primary-lg cta-btn">Get Your Free Quote Now &#8594;</a>
-      <p class="cta-note">&#9989; No commitment required &nbsp;&nbsp; &#9989; Free consultation &nbsp;&nbsp; &#9989; Response within 24 hours</p>
-    </div>
-  </section>
-
-  <!-- ===== FOOTER ===== -->
-  <footer class="footer">
-    <div class="footer-inner">
-      <div class="footer-brand">
-        <div class="footer-logo">
-          <div class="logo-box sm">&#9643;</div>
-          Web<span>lith</span>
-        </div>
-        <p>Premium website development for businesses across India. We build websites that convert visitors into customers.</p>
-      </div>
-      <div class="footer-links">
-        <h4>Services</h4>
-        <a href="#services">Business Website</a>
-        <a href="#services">E-commerce Store</a>
-        <a href="#services">Portfolio Site</a>
-        <a href="#services">Dynamic Web App</a>
-      </div>
-      <div class="footer-links">
-        <h4>Company</h4>
-        <a href="#why-us">Why Weblith</a>
-        <a href="#portfolio">Our Work</a>
-        <a href="#testimonials">Reviews</a>
-        <a href="form.html">Get Quote</a>
-      </div>
-      <div class="footer-links">
-        <h4>Contact</h4>
-        <a href="form.html">Get Free Quote</a>
-        <a href="admin.html">Admin Panel</a>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>&#169; 2026 Weblith &middot; All rights reserved &middot; Built with &#10084; in India</p>
-    </div>
-  </footer>
-
-  <script>
-    // Canvas BG
-    const canvas = document.getElementById('bgCanvas');
-    const ctx = canvas.getContext('2d');
-    let pts = [];
-    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-    resize(); window.addEventListener('resize', resize);
-    for (let i=0;i<50;i++) pts.push({x:Math.random()*window.innerWidth,y:Math.random()*window.innerHeight,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*1.5+.5,a:Math.random()*.3+.07});
-    function draw() {
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-      pts.forEach(p=>{
-        p.x+=p.vx;p.y+=p.vy;
-        if(p.x<0)p.x=canvas.width;if(p.x>canvas.width)p.x=0;
-        if(p.y<0)p.y=canvas.height;if(p.y>canvas.height)p.y=0;
-        ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-        ctx.fillStyle='rgba(139,92,246,'+p.a+')';ctx.fill();
-      });
-      requestAnimationFrame(draw);
-    }
-    draw();
-
-    // Navbar scroll
-    window.addEventListener('scroll', () => {
-      document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
-    });
-
-    // Mobile menu
-    function toggleMenu() {
-      document.getElementById('navLinks').classList.toggle('open');
-      document.getElementById('hamburger').classList.toggle('active');
-    }
-
-    // Scroll animations
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.service-card,.why-card,.step-item,.portfolio-card,.testi-card').forEach(el => {
-      el.classList.add('fade-up'); observer.observe(el);
-    });
-  </script>
+  <script src="app.js"></script>
 </body>
 </html>

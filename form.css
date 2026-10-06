@@ -27,8 +27,19 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
   border-bottom:1px solid var(--border);
   position:sticky;top:0;z-index:100;
 }
-.back-link{color:var(--muted);text-decoration:none;font-size:.85rem;font-weight:500;transition:color .2s;width:140px;}
-.back-link:hover{color:var(--text);}
+.nav-actions{display:flex;align-items:center;gap:.75rem;}
+.nav-badge{
+  display:inline-flex;align-items:center;gap:.5rem;
+  background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.25);
+  color:#34d399;font-size:.78rem;font-weight:600;padding:.35rem .85rem;border-radius:100px;
+}
+.nav-admin-link{
+  display:inline-flex;align-items:center;gap:.35rem;
+  color:var(--muted);text-decoration:none;font-size:.8rem;font-weight:500;
+  padding:.35rem .75rem;border-radius:8px;border:1px solid var(--border);
+  background:rgba(255,255,255,.03);transition:all .2s;
+}
+.nav-admin-link:hover{color:var(--text);border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.08);}
 .nav-logo{
   display:flex;align-items:center;gap:.65rem;
   font-size:1.25rem;font-weight:800;color:var(--text);text-decoration:none;
