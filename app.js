@@ -1,6 +1,8 @@
-
 const SUPABASE_URL = 'https://hdgfmncycavoqjfeleem.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_ogNczthN8mfe4kIczXC7yA_GMrzwixl';
+
+const META_PIXEL_ID = '1483479293829689';
+const META_CAPI_TOKEN = 'EAGVccZABOaOABSgREnJIl0ZBZBhy3wMRXpWGAutZBhaqKMI6sIIYhY3bCv7obc4yZChH17XujjJyyqso1F7AYPMVZAkwZAoLurHrPiHgBEaZCZA3JgWzk3CSsHRdx3e8Vc3V6h3ZCGhRCUZCmYFZBGae8D7zZA1ddDjknIaAXcURJUwOWx60lf8aNYZAmAk9ZBt7z0zRAbC3wZDZD';
 
 // Canvas BG
 (function(){
@@ -93,6 +95,95 @@ function goToStep1(){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
+// Meta Tracking Helper
+async function sha256Browser(str) {
+  if (!str) return '';
+  try {
+    const msgBuffer = new TextEncoder().encode(str.trim().toLowerCase());
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  } catch (e) {
+    return '';
+  }
+}
+
+async function trackMetaSubscribeEvent(lead, eventId) {
+  // 1. Browser Meta Pixel
+  if (typeof fbq === 'function') {
+    try {
+      fbq('track', 'Subscribe', {
+        content_name: lead.website_type || 'Website Inquiry',
+        currency: 'INR',
+        value: 0
+      }, { eventID: eventId });
+      console.log('Meta Pixel Browser: Subscribe event fired with eventID:', eventId);
+    } catch (e) {
+      console.warn('Pixel browser error:', e);
+    }
+  }
+
+  // 2. Server-side CAPI via /api/subscribe
+  let serverOk = false;
+  try {
+    const res = await fetch('/api/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...lead, event_id: eventId })
+    });
+    if (res.ok) {
+      const data = await res.json();
+      console.log('Meta CAPI Server Response:', data);
+      serverOk = true;
+    }
+  } catch (err) {
+    console.warn('Server CAPI endpoint failed, falling back to direct Graph API call:', err);
+  }
+
+  // 3. Fallback direct Graph API call if running on static hosting
+  if (!serverOk) {
+    try {
+      const emHash = lead.email ? await sha256Browser(lead.email) : null;
+      let digits = (lead.whatsapp || lead.phone || '').replace(/\D/g, '');
+      if (digits.length === 10) digits = '91' + digits;
+      const phHash = digits ? await sha256Browser(digits) : null;
+      const fnHash = lead.name ? await sha256Browser(lead.name.split(' ')[0]) : null;
+
+      const userData = {
+        client_user_agent: navigator.userAgent
+      };
+      if (emHash) userData.em = [emHash];
+      if (phHash) userData.ph = [phHash];
+      if (fnHash) userData.fn = [fnHash];
+
+      const payload = {
+        data: [{
+          event_name: 'Subscribe',
+          event_time: Math.floor(Date.now() / 1000),
+          event_id: eventId,
+          action_source: 'website',
+          event_source_url: window.location.href,
+          user_data: userData,
+          custom_data: {
+            content_name: lead.website_type || 'Website Inquiry',
+            currency: 'INR',
+            value: 0
+          }
+        }]
+      };
+
+      await fetch(`https://graph.facebook.com/v19.0/${META_PIXEL_ID}/events?access_token=${META_CAPI_TOKEN}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      console.log('Meta CAPI direct fallback sent successfully.');
+    } catch (e) {
+      console.error('Direct Meta CAPI fallback error:', e);
+    }
+  }
+}
+
 async function submitForm(){
   const budget=document.getElementById('inp-budget').value.trim();
   const message=document.getElementById('inp-msg').value.trim();
@@ -119,6 +210,12 @@ async function submitForm(){
     message:message
   };
 
+  const eventId = 'sub_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
+
+  // Trigger Meta Pixel & Conversions API (Subscribe event)
+  trackMetaSubscribeEvent(lead, eventId);
+
+  // Save to Supabase
   try{
     const res=await fetch(SUPABASE_URL+'/rest/v1/leads',{
       method:'POST',
