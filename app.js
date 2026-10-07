@@ -30,7 +30,7 @@ function parseBudgetValue(budgetStr) {
       if(p.x<0)p.x=canvas.width;if(p.x>canvas.width)p.x=0;
       if(p.y<0)p.y=canvas.height;if(p.y>canvas.height)p.y=0;
       ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-      ctx.fillStyle='rgba(139,92,246,'+p.a+')';ctx.fill();
+      ctx.fillStyle='rgba(79,70,229,'+(p.a*0.35)+')';ctx.fill();
     });
     requestAnimationFrame(draw);
   }
@@ -288,15 +288,38 @@ async function submitForm(){
   document.getElementById('sline2').classList.add('completed');
   document.getElementById('sdot3').classList.add('active','completed');
 
-  const d=document.getElementById('successDetails');
-  if(d) d.innerHTML='<strong>Name:</strong> '+lead.name+'<br/><strong>WhatsApp:</strong> '+lead.whatsapp+'<br/><strong>Website Type:</strong> '+lead.website_type+'<br/><strong>Budget:</strong> '+lead.budget;
-    const card = document.getElementById('formCard');
-    if (card && window.innerWidth <= 880) {
-      card.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    } else {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
   }
+
+  const d = document.getElementById('successDetails');
+  if (d) {
+    d.innerHTML = '<strong>Name:</strong> ' + escapeHtml(lead.name) + '<br/>' +
+      '<strong>WhatsApp:</strong> ' + escapeHtml(lead.whatsapp) + '<br/>' +
+      '<strong>Website Type:</strong> ' + escapeHtml(lead.website_type) + '<br/>' +
+      '<strong>Estimated Budget:</strong> ' + escapeHtml(lead.budget);
+  }
+
+  const waBtn = document.getElementById('successWaBtn');
+  if (waBtn) {
+    const cleanWa = (lead.whatsapp || '').replace(/\D/g, '');
+    const msg = encodeURIComponent(`Hi Weblith! I just submitted a website quote request for a ${lead.website_type} (Budget: ${lead.budget}). My name is ${lead.name}.`);
+    waBtn.href = `https://wa.me/919876543210?text=${msg}`;
+  }
+
+  const card = document.getElementById('formCard');
+  if (card && window.innerWidth <= 880) {
+    card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } else {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
 
   function saveFallback(lead){
     const leads=JSON.parse(localStorage.getItem('wl_leads_fb')||'[]');

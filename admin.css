@@ -277,6 +277,7 @@ body {
   box-shadow: 0 0 16px rgba(139, 92, 246, 0.4);
 }
 .logo-icon.sm { width: 30px; height: 30px; font-size: 0.95rem; border-radius: 7px; }
+.logo-text { font-size: 1.25rem; font-weight: 800; color: var(--text); letter-spacing: -0.5px; }
 .logo-accent { color: var(--purple-light); }
 
 .sidebar-nav {

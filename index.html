@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Get Free Quote - Weblith</title>
-  <meta name="description" content="Fill our quick 2-step form and get a custom website quote from Weblith within 24 hours."/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0"/>
+  <title>Get Free Quote - weblith</title>
+  <meta name="description" content="Fill our quick 2-step form and get a custom website quote from weblith within 24 hours."/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/form.css"/>
@@ -34,40 +34,59 @@
     <!-- NAV -->
     <nav class="form-nav">
       <a href="/form" class="nav-logo">
-        <div class="logo-box">&#9643;</div>
-        Web<span>lith</span>
+        <div class="logo-box">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 6L8 18L12 9L16 18L20 6" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span class="logo-text">weblith</span>
       </a>
       <div class="nav-actions">
-        <div class="nav-badge"><span class="live-dot"></span> Fast 24h WhatsApp Response</div>
+        <div class="nav-badge"><span class="live-dot"></span> 24h WhatsApp Quote</div>
         <a href="/admin" class="nav-admin-link" title="Admin Panel">&#128274; Admin</a>
       </div>
     </nav>
 
     <!-- FORM PAGE -->
     <main class="form-main">
+      <!-- LEFT COLUMN -->
       <div class="form-left">
         <div class="form-hero-tag">
-          <span class="live-dot"></span> Free Consultation
+          <span class="live-dot"></span> Accepting New Client Projects
         </div>
         <h1 class="form-title">Let's Build Your <span class="grad-text">Dream Website</span></h1>
-        <p class="form-desc">Fill this quick form — we'll contact you on WhatsApp within <strong>24 hours</strong> with a custom quote.</p>
+        <p class="form-desc">Fill this quick 60-second form — our team will send a custom quote &amp; free consultation on WhatsApp within <strong>24 hours</strong>.</p>
 
         <div class="form-benefits">
-          <div class="benefit-item">&#9989; 100% Free Consultation</div>
-          <div class="benefit-item">&#9989; No Hidden Charges</div>
-          <div class="benefit-item">&#9989; Response in 24 Hours</div>
-          <div class="benefit-item">&#9989; Custom Built Websites</div>
+          <div class="benefit-item">
+            <span class="icon">&#9989;</span>
+            <span><strong>100% Free Consultation</strong> &mdash; No obligation</span>
+          </div>
+          <div class="benefit-item">
+            <span class="icon">&#9989;</span>
+            <span><strong>Transparent Pricing</strong> &mdash; Zero hidden charges</span>
+          </div>
+          <div class="benefit-item">
+            <span class="icon">&#9989;</span>
+            <span><strong>Direct WhatsApp Response</strong> within 24 hours</span>
+          </div>
+          <div class="benefit-item">
+            <span class="icon">&#9989;</span>
+            <span><strong>Custom Built &amp; Fast</strong> &mdash; SEO &amp; Mobile ready</span>
+          </div>
         </div>
 
         <div class="mini-testimonial">
           <div class="mini-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-          <p>"Weblith built our store in 10 days. Sales tripled!"</p>
-          <span>— Rahul M., FashionHub Delhi</span>
+          <p>"Weblith built our modern online store in 10 days. The design is incredible and sales doubled!"</p>
+          <span>&mdash; Rahul M., FashionHub Delhi</span>
         </div>
       </div>
 
+      <!-- RIGHT COLUMN (FORM) -->
       <div class="form-right">
         <div class="form-card" id="formCard">
+          
           <!-- STEP INDICATORS -->
           <div class="step-indicators">
             <div class="step-indicator active" id="sdot1">
@@ -87,8 +106,9 @@
           <div class="form-step active" id="step1">
             <div class="step-header">
               <h2 class="step-title">Step 1 of 2 &mdash; Your Details</h2>
-              <p class="step-desc">We will contact you with a custom quote.</p>
+              <p class="step-desc">Where should we send your custom website quote?</p>
             </div>
+            
             <div class="field-group">
               <div class="field">
                 <label class="field-label" for="inp-name">Full Name *</label>
@@ -98,6 +118,7 @@
                 </div>
                 <span class="field-error" id="err-name"></span>
               </div>
+              
               <div class="field">
                 <label class="field-label" for="inp-phone">Calling Number *</label>
                 <div class="input-wrapper">
@@ -107,11 +128,12 @@
                 <span class="field-error" id="err-phone"></span>
               </div>
             </div>
+
             <div class="field-group">
               <div class="field">
                 <label class="field-label" for="inp-wa">WhatsApp Number *</label>
                 <div class="input-wrapper">
-                  <span class="input-icon">&#128172;</span>
+                  <span class="input-icon" style="color:#25d366;">&#128172;</span>
                   <input class="input" type="tel" id="inp-wa" placeholder="+91 98765 43210" inputmode="tel" autocomplete="tel" required/>
                 </div>
                 <div class="same-row">
@@ -120,6 +142,7 @@
                 </div>
                 <span class="field-error" id="err-wa"></span>
               </div>
+
               <div class="field">
                 <label class="field-label" for="inp-email">Email Address *</label>
                 <div class="input-wrapper">
@@ -129,8 +152,14 @@
                 <span class="field-error" id="err-email"></span>
               </div>
             </div>
+
+            <div class="form-privacy-note">
+              <span>&#128274;</span>
+              <span>We value your privacy &mdash; zero spam, 100% confidential.</span>
+            </div>
+
             <button class="btn-primary" onclick="goToStep2()">
-              Next: Project Details &#8594;
+              Continue to Project Details &#8594;
             </button>
           </div>
 
@@ -138,62 +167,68 @@
           <div class="form-step" id="step2">
             <div class="step-header">
               <h2 class="step-title">Step 2 of 2 &mdash; Project Details</h2>
-              <p class="step-desc">Help us understand what you need.</p>
+              <p class="step-desc">Help us understand your requirements to prepare the quote.</p>
             </div>
+            
             <div class="field">
               <label class="field-label">Website Type *</label>
               <div class="website-types" id="typeGroup">
                 <div class="type-card" onclick="selectType(this)" data-value="Business Website">
                   <div class="type-emoji">&#127970;</div>
                   <div class="type-name">Business Website</div>
-                  <div class="type-desc">Professional brand presence</div>
+                  <div class="type-desc">Professional brand presence &amp; leads</div>
                 </div>
                 <div class="type-card" onclick="selectType(this)" data-value="Portfolio">
                   <div class="type-emoji">&#127912;</div>
                   <div class="type-name">Portfolio</div>
-                  <div class="type-desc">Showcase your work</div>
+                  <div class="type-desc">Showcase your personal work &amp; brand</div>
                 </div>
                 <div class="type-card" onclick="selectType(this)" data-value="Dynamic Website">
                   <div class="type-emoji">&#9889;</div>
-                  <div class="type-name">Dynamic Website</div>
-                  <div class="type-desc">Custom features and CMS</div>
+                  <div class="type-name">Dynamic Web App</div>
+                  <div class="type-desc">Custom features, CMS &amp; portal</div>
                 </div>
                 <div class="type-card" onclick="selectType(this)" data-value="E-commerce">
                   <div class="type-emoji">&#128717;</div>
-                  <div class="type-name">E-commerce</div>
-                  <div class="type-desc">Online store and payments</div>
+                  <div class="type-name">E-Commerce Store</div>
+                  <div class="type-desc">Online store, checkout &amp; payments</div>
                 </div>
               </div>
               <span class="field-error" id="err-type"></span>
             </div>
+
             <div class="field">
-              <label class="field-label" for="inp-budget">Maximum Budget *</label>
+              <label class="field-label" for="inp-budget">Approximate Budget *</label>
               <div class="budget-wrap">
                 <div class="input-wrapper">
-                  <span class="input-icon" style="color:#06b6d4;font-weight:700;font-size:1.1rem;">&#8377;</span>
-                  <input class="input" type="text" id="inp-budget" placeholder="e.g. 15000 or 5,000 - 15,000" inputmode="text"/>
+                  <span class="input-icon" style="color:var(--primary);font-weight:700;font-size:1.15rem;">&#8377;</span>
+                  <input class="input" type="text" id="inp-budget" placeholder="e.g. 15,000 or 25,000 - 50,000" inputmode="text"/>
                 </div>
                 <div class="chips">
-                  <button type="button" class="chip" onclick="setBudget(this,'Under Rs.5,000')">Under 5K</button>
-                  <button type="button" class="chip" onclick="setBudget(this,'Rs.5,000 - Rs.15,000')">5K-15K</button>
-                  <button type="button" class="chip" onclick="setBudget(this,'Rs.15,000 - Rs.30,000')">15K-30K</button>
-                  <button type="button" class="chip" onclick="setBudget(this,'Rs.30,000 - Rs.60,000')">30K-60K</button>
-                  <button type="button" class="chip" onclick="setBudget(this,'Rs.60,000+')">60K+</button>
+                  <button type="button" class="chip" onclick="setBudget(this,'Under Rs.10,000')">Under 10K</button>
+                  <button type="button" class="chip" onclick="setBudget(this,'Rs.10,000 - Rs.25,000')">10K - 25K</button>
+                  <button type="button" class="chip" onclick="setBudget(this,'Rs.25,000 - Rs.50,000')">25K - 50K</button>
+                  <button type="button" class="chip" onclick="setBudget(this,'Rs.50,000 - Rs.1,00,000')">50K - 1 Lakh</button>
+                  <button type="button" class="chip" onclick="setBudget(this,'Rs.1,00,000+')">1 Lakh+</button>
                 </div>
               </div>
               <span class="field-error" id="err-budget"></span>
             </div>
+
             <div class="field">
-              <label class="field-label" for="inp-msg">About Your Business <span class="opt-tag">Optional</span></label>
-              <textarea class="input textarea" id="inp-msg" placeholder="E.g. I run a clothing store in Delhi and want to sell online..." rows="3"></textarea>
+              <label class="field-label" for="inp-msg">About Your Project <span class="opt-tag">Optional</span></label>
+              <textarea class="input textarea" id="inp-msg" placeholder="Tell us about your business, features needed, or link reference websites..." rows="3"></textarea>
             </div>
+
             <div class="btn-row">
               <button class="btn-secondary" onclick="goToStep1()">&#8592; Back</button>
               <button class="btn-primary" id="submitBtn" onclick="submitForm()">
-                <span id="submitBtnText">Submit &amp; Get Quote &#10148;</span>
+                <span id="submitBtnText">Get Free Custom Quote &#10148;</span>
                 <span id="submitLoader" style="display:none;" class="ldots"><span></span><span></span><span></span></span>
               </button>
             </div>
+
+            <p class="form-guarantee">&#9889; Takes only 60 seconds &bull; 100% Free consultation &bull; No spam</p>
           </div>
 
           <!-- SUCCESS -->
@@ -201,12 +236,20 @@
             <div class="success-wrap">
               <div class="success-emoji">&#127881;</div>
               <h2 class="success-title">You're All Set!</h2>
-              <p class="success-msg">We have received your request and will contact you within <strong>24 hours</strong> on your WhatsApp.</p>
+              <p class="success-msg">We have received your details and will analyze your requirements. Expect your custom quote on WhatsApp within <strong>24 hours</strong>.</p>
+              
               <div class="success-box" id="successDetails"></div>
-              <p style="font-size:0.82rem;color:var(--muted);margin-top:1.25rem;">&#128172; Our team will reach out directly on your WhatsApp number.</p>
-              <button class="btn-primary" onclick="resetForm()" style="margin-top:1rem;">Submit Another Request</button>
+
+              <a href="https://wa.me/919876543210?text=Hi%20Weblith,%20I%20just%20submitted%20a%20website%20quote%20request!" target="_blank" rel="noopener" class="success-wa-action" id="successWaBtn">
+                &#128172; Chat on WhatsApp Directly
+              </a>
+
+              <button class="btn-secondary" onclick="resetForm()" style="margin-top:1rem;width:100%;max-width:400px;">
+                Submit Another Request
+              </button>
             </div>
           </div>
+
         </div>
       </div>
     </main>
