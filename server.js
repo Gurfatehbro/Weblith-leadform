@@ -7,7 +7,8 @@ const path = require('path');
 const PORT = 3000;
 const BASE_DIR = __dirname;
 
-const META_PIXEL_ID = '1483479293829689';
+const META_PIXEL_ID = '1462211845727559';
+const BACKUP_PIXEL_ID = '1483479293829689';
 const META_CAPI_TOKEN = 'EAGVccZABOaOABSgREnJIl0ZBZBhy3wMRXpWGAutZBhaqKMI6sIIYhY3bCv7obc4yZChH17XujjJyyqso1F7AYPMVZAkwZAoLurHrPiHgBEaZCZA3JgWzk3CSsHRdx3e8Vc3V6h3ZCGhRCUZCmYFZBGae8D7zZA1ddDjknIaAXcURJUwOWx60lf8aNYZAmAk9ZBt7z0zRAbC3wZDZD';
 
 const MIME_TYPES = {
@@ -38,66 +39,22 @@ function normalizePhone(phone) {
   return hashSha256(digits);
 }
 
-function sendMetaCapiSubscribe(lead, req) {
-  return new Promise((resolve, reject) => {
-    const eventTime = Math.floor(Date.now() / 1000);
-    const eventId = lead.event_id || ('sub_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8));
+function parseBudget(budgetStr) {
+  if (!budgetStr) return 10000;
+  const numbers = String(budgetStr).replace(/,/g, '').match(/\d+/g);
+  if (numbers && numbers.length > 0) {
+    const val = parseInt(numbers[0], 10);
+    return isNaN(val) || val <= 0 ? 10000 : val;
+  }
+  return 10000;
+}
 
-    const userData = {
-      client_user_agent: req.headers['user-agent'] || ''
-    };
-
-    const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-    if (clientIp && clientIp !== '::1' && clientIp !== '127.0.0.1') {
-      userData.client_ip_address = clientIp.split(',')[0].trim();
-    }
-
-    if (lead.email) {
-      const em = hashSha256(lead.email);
-      if (em) userData.em = [em];
-    }
-
-    const rawPhone = lead.whatsapp || lead.phone;
-    if (rawPhone) {
-      const ph = normalizePhone(rawPhone);
-      if (ph) userData.ph = [ph];
-    }
-
-    if (lead.name) {
-      const firstName = lead.name.split(' ')[0];
-      const fn = hashSha256(firstName);
-      if (fn) userData.fn = [fn];
-    }
-
-    const payloadObj = {
-      data: [
-        {
-          event_name: 'Subscribe',
-          event_time: eventTime,
-          event_id: eventId,
-          action_source: 'website',
-          event_source_url: req.headers['referer'] || 'http://localhost:3000/form',
-          user_data: userData,
-          custom_data: {
-            content_name: lead.website_type || 'Website Inquiry',
-            currency: 'INR',
-            value: 0
-          }
-        }
-      ]
-    };
-
-    const testCode = lead.test_event_code || 'TEST50055';
-    if (testCode) {
-      payloadObj.test_event_code = testCode;
-    }
-
-    const payload = JSON.stringify(payloadObj);
-
+function postToGraphApi(pixelId, payload) {
+  return new Promise((resolve) => {
     const options = {
       hostname: 'graph.facebook.com',
       port: 443,
-      path: `/v19.0/${META_PIXEL_ID}/events?access_token=${META_CAPI_TOKEN}`,
+      path: `/v19.0/${pixelId}/events?access_token=${META_CAPI_TOKEN}`,
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -110,8 +67,7 @@ function sendMetaCapiSubscribe(lead, req) {
       fbRes.on('data', chunk => { data += chunk; });
       fbRes.on('end', () => {
         try {
-          const parsed = JSON.parse(data);
-          resolve(parsed);
+          resolve(JSON.parse(data));
         } catch {
           resolve({ raw: data });
         }
@@ -126,6 +82,84 @@ function sendMetaCapiSubscribe(lead, req) {
     fbReq.write(payload);
     fbReq.end();
   });
+}
+
+async function sendMetaCapiEvents(lead, req) {
+  const eventTime = Math.floor(Date.now() / 1000);
+  const subscribeEventId = lead.event_id || ('sub_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8));
+  const purchaseEventId = lead.purchase_event_id || ('pur_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8));
+  const purchaseValue = lead.purchase_value || parseBudget(lead.budget);
+
+  const userData = {
+    client_user_agent: req.headers['user-agent'] || ''
+  };
+
+  const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+  if (clientIp && clientIp !== '::1' && clientIp !== '127.0.0.1') {
+    userData.client_ip_address = clientIp.split(',')[0].trim();
+  }
+
+  if (lead.email) {
+    const em = hashSha256(lead.email);
+    if (em) userData.em = [em];
+  }
+
+  const rawPhone = lead.whatsapp || lead.phone;
+  if (rawPhone) {
+    const ph = normalizePhone(rawPhone);
+    if (ph) userData.ph = [ph];
+  }
+
+  if (lead.name) {
+    const firstName = lead.name.split(' ')[0];
+    const fn = hashSha256(firstName);
+    if (fn) userData.fn = [fn];
+  }
+
+  const payloadObj = {
+    data: [
+      {
+        event_name: 'Purchase',
+        event_time: eventTime,
+        event_id: purchaseEventId,
+        action_source: 'website',
+        event_source_url: req.headers['referer'] || 'http://localhost:3000/form',
+        user_data: userData,
+        custom_data: {
+          content_name: lead.website_type || 'Website Inquiry',
+          currency: 'INR',
+          value: purchaseValue
+        }
+      },
+      {
+        event_name: 'Subscribe',
+        event_time: eventTime,
+        event_id: subscribeEventId,
+        action_source: 'website',
+        event_source_url: req.headers['referer'] || 'http://localhost:3000/form',
+        user_data: userData,
+        custom_data: {
+          content_name: lead.website_type || 'Website Inquiry',
+          currency: 'INR',
+          value: 0
+        }
+      }
+    ]
+  };
+
+  const testCode = lead.test_event_code || 'TEST50055';
+  if (testCode) {
+    payloadObj.test_event_code = testCode;
+  }
+
+  const payload = JSON.stringify(payloadObj);
+
+  const [primaryRes, backupRes] = await Promise.all([
+    postToGraphApi(META_PIXEL_ID, payload),
+    postToGraphApi(BACKUP_PIXEL_ID, payload)
+  ]);
+
+  return { primary: primaryRes, backup: backupRes };
 }
 
 function serveFile(filePath, res) {
@@ -145,8 +179,8 @@ const server = http.createServer((req, res) => {
     req.on('end', async () => {
       try {
         const lead = JSON.parse(body || '{}');
-        const metaRes = await sendMetaCapiSubscribe(lead, req);
-        console.log('Meta CAPI Subscribe Result:', metaRes);
+        const metaRes = await sendMetaCapiEvents(lead, req);
+        console.log('Meta CAPI Result:', metaRes);
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ success: true, meta: metaRes }));
       } catch (err) {
@@ -195,5 +229,5 @@ const server = http.createServer((req, res) => {
 
 server.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}/ (Form) and http://localhost:${PORT}/admin (Admin)`);
-  console.log(`Meta Conversions API active for Pixel/Dataset: ${META_PIXEL_ID} (Event: Subscribe)`);
+  console.log(`Meta Conversions API active for Pixel: ${META_PIXEL_ID} & ${BACKUP_PIXEL_ID} (Events: Purchase, Subscribe)`);
 });

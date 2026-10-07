@@ -19,12 +19,14 @@
     t.src=v;s=b.getElementsByTagName(e)[0];
     s.parentNode.insertBefore(t,s)}(window, document,'script',
     'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '1462211845727559');
     fbq('init', '1106298835129618');
     fbq('init', '1483479293829689');
     fbq('set', 'testEventCode', 'TEST50055');
     fbq('track', 'PageView');
   </script>
   <noscript>
+    <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1462211845727559&ev=PageView&noscript=1" />
     <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1106298835129618&ev=PageView&noscript=1" />
     <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1483479293829689&ev=PageView&noscript=1" />
   </noscript>
@@ -99,7 +101,7 @@
                 <label class="field-label" for="inp-name">Full Name *</label>
                 <div class="input-wrapper">
                   <span class="input-icon">&#128100;</span>
-                  <input class="input" type="text" id="inp-name" placeholder="Aapka poora naam"/>
+                  <input class="input" type="text" id="inp-name" placeholder="Aapka poora naam" autocomplete="name" required/>
                 </div>
                 <span class="field-error" id="err-name"></span>
               </div>
@@ -107,7 +109,7 @@
                 <label class="field-label" for="inp-phone">Calling Number *</label>
                 <div class="input-wrapper">
                   <span class="input-icon">&#128222;</span>
-                  <input class="input" type="tel" id="inp-phone" placeholder="+91 98765 43210"/>
+                  <input class="input" type="tel" id="inp-phone" placeholder="+91 98765 43210" inputmode="tel" autocomplete="tel" required/>
                 </div>
                 <span class="field-error" id="err-phone"></span>
               </div>
@@ -117,7 +119,7 @@
                 <label class="field-label" for="inp-wa">WhatsApp Number *</label>
                 <div class="input-wrapper">
                   <span class="input-icon">&#128172;</span>
-                  <input class="input" type="tel" id="inp-wa" placeholder="+91 98765 43210"/>
+                  <input class="input" type="tel" id="inp-wa" placeholder="+91 98765 43210" inputmode="tel" autocomplete="tel" required/>
                 </div>
                 <div class="same-row">
                   <input type="checkbox" id="sameCheck" class="checkbox" onchange="handleSameCheck()"/>
@@ -129,7 +131,7 @@
                 <label class="field-label" for="inp-email">Email Address *</label>
                 <div class="input-wrapper">
                   <span class="input-icon">&#9993;</span>
-                  <input class="input" type="email" id="inp-email" placeholder="yourname@email.com"/>
+                  <input class="input" type="email" id="inp-email" placeholder="yourname@email.com" inputmode="email" autocomplete="email" required/>
                 </div>
                 <span class="field-error" id="err-email"></span>
               </div>

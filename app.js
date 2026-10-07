@@ -1,8 +1,18 @@
 const SUPABASE_URL = 'https://hdgfmncycavoqjfeleem.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_ogNczthN8mfe4kIczXC7yA_GMrzwixl';
 
-const META_PIXEL_ID = '1483479293829689';
+const META_PIXEL_ID = '1462211845727559';
 const META_CAPI_TOKEN = 'EAGVccZABOaOABSgREnJIl0ZBZBhy3wMRXpWGAutZBhaqKMI6sIIYhY3bCv7obc4yZChH17XujjJyyqso1F7AYPMVZAkwZAoLurHrPiHgBEaZCZA3JgWzk3CSsHRdx3e8Vc3V6h3ZCGhRCUZCmYFZBGae8D7zZA1ddDjknIaAXcURJUwOWx60lf8aNYZAmAk9ZBt7z0zRAbC3wZDZD';
+
+function parseBudgetValue(budgetStr) {
+  if (!budgetStr) return 10000;
+  const numbers = String(budgetStr).replace(/,/g, '').match(/\d+/g);
+  if (numbers && numbers.length > 0) {
+    const val = parseInt(numbers[0], 10);
+    return isNaN(val) || val <= 0 ? 10000 : val;
+  }
+  return 10000;
+}
 
 // Canvas BG
 (function(){
@@ -82,7 +92,12 @@ function goToStep2(){
   document.getElementById('sdot1').classList.add('completed');
   document.getElementById('sline1').classList.add('completed');
   document.getElementById('sdot2').classList.add('active');
-  window.scrollTo({top:0,behavior:'smooth'});
+  const card = document.getElementById('formCard');
+  if (card && window.innerWidth <= 880) {
+    card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } else {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 }
 
 function goToStep1(){
@@ -92,7 +107,12 @@ function goToStep1(){
   document.getElementById('sline1').classList.remove('completed');
   document.getElementById('sdot1').classList.remove('completed');
   document.getElementById('sdot1').classList.add('active');
-  window.scrollTo({top:0,behavior:'smooth'});
+  const card = document.getElementById('formCard');
+  if (card && window.innerWidth <= 880) {
+    card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } else {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 }
 
 // Meta Tracking Helper
@@ -108,17 +128,27 @@ async function sha256Browser(str) {
   }
 }
 
-async function trackMetaSubscribeEvent(lead, eventId) {
-  // 1. Browser Meta Pixel
+async function trackMetaEvents(lead, subscribeEventId, purchaseEventId, purchaseValue) {
+  // 1. Browser Meta Pixel: Track Purchase & Subscribe
   if (typeof fbq === 'function') {
     try {
       fbq('set', 'testEventCode', 'TEST50055');
+
+      // PURCHASE EVENT
+      fbq('track', 'Purchase', {
+        content_name: lead.website_type || 'Website Inquiry',
+        currency: 'INR',
+        value: purchaseValue
+      }, { eventID: purchaseEventId });
+      console.log('Meta Pixel: Purchase event fired (Value:', purchaseValue, 'INR, EventID:', purchaseEventId, ')');
+
+      // SUBSCRIBE EVENT
       fbq('track', 'Subscribe', {
         content_name: lead.website_type || 'Website Inquiry',
         currency: 'INR',
         value: 0
-      }, { eventID: eventId });
-      console.log('Meta Pixel Browser: Subscribe event fired (Pixels: 1106298835129618 & 1483479293829689) with eventID:', eventId);
+      }, { eventID: subscribeEventId });
+      console.log('Meta Pixel: Subscribe event fired (EventID:', subscribeEventId, ')');
     } catch (e) {
       console.warn('Pixel browser error:', e);
     }
@@ -130,7 +160,13 @@ async function trackMetaSubscribeEvent(lead, eventId) {
     const res = await fetch('/api/subscribe', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...lead, event_id: eventId, test_event_code: 'TEST50055' })
+      body: JSON.stringify({
+        ...lead,
+        event_id: subscribeEventId,
+        purchase_event_id: purchaseEventId,
+        purchase_value: purchaseValue,
+        test_event_code: 'TEST50055'
+      })
     });
     if (res.ok) {
       const data = await res.json();
@@ -158,19 +194,34 @@ async function trackMetaSubscribeEvent(lead, eventId) {
       if (fnHash) userData.fn = [fnHash];
 
       const payload = {
-        data: [{
-          event_name: 'Subscribe',
-          event_time: Math.floor(Date.now() / 1000),
-          event_id: eventId,
-          action_source: 'website',
-          event_source_url: window.location.href,
-          user_data: userData,
-          custom_data: {
-            content_name: lead.website_type || 'Website Inquiry',
-            currency: 'INR',
-            value: 0
+        data: [
+          {
+            event_name: 'Purchase',
+            event_time: Math.floor(Date.now() / 1000),
+            event_id: purchaseEventId,
+            action_source: 'website',
+            event_source_url: window.location.href,
+            user_data: userData,
+            custom_data: {
+              content_name: lead.website_type || 'Website Inquiry',
+              currency: 'INR',
+              value: purchaseValue
+            }
+          },
+          {
+            event_name: 'Subscribe',
+            event_time: Math.floor(Date.now() / 1000),
+            event_id: subscribeEventId,
+            action_source: 'website',
+            event_source_url: window.location.href,
+            user_data: userData,
+            custom_data: {
+              content_name: lead.website_type || 'Website Inquiry',
+              currency: 'INR',
+              value: 0
+            }
           }
-        }],
+        ],
         test_event_code: 'TEST50055'
       };
 
@@ -212,10 +263,12 @@ async function submitForm(){
     message:message
   };
 
-  const eventId = 'sub_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
+  const subscribeEventId = 'sub_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
+  const purchaseEventId = 'pur_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
+  const purchaseValue = parseBudgetValue(budget);
 
-  // Trigger Meta Pixel & Conversions API (Subscribe event)
-  trackMetaSubscribeEvent(lead, eventId);
+  // Trigger Meta Pixel & Conversions API (Purchase & Subscribe events)
+  trackMetaEvents(lead, subscribeEventId, purchaseEventId, purchaseValue);
 
   // Save to Supabase
   try{
@@ -239,28 +292,38 @@ async function submitForm(){
 
   const d=document.getElementById('successDetails');
   if(d) d.innerHTML='<strong>Name:</strong> '+lead.name+'<br/><strong>WhatsApp:</strong> '+lead.whatsapp+'<br/><strong>Website Type:</strong> '+lead.website_type+'<br/><strong>Budget:</strong> '+lead.budget;
-  window.scrollTo({top:0,behavior:'smooth'});
-}
+    const card = document.getElementById('formCard');
+    if (card && window.innerWidth <= 880) {
+      card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
 
-function saveFallback(lead){
-  const leads=JSON.parse(localStorage.getItem('wl_leads_fb')||'[]');
-  lead.id=Date.now().toString();lead.created_at=new Date().toISOString();
-  leads.unshift(lead);localStorage.setItem('wl_leads_fb',JSON.stringify(leads));
-}
+  function saveFallback(lead){
+    const leads=JSON.parse(localStorage.getItem('wl_leads_fb')||'[]');
+    lead.id=Date.now().toString();lead.created_at=new Date().toISOString();
+    leads.unshift(lead);localStorage.setItem('wl_leads_fb',JSON.stringify(leads));
+  }
 
-function resetForm(){
-  ['inp-name','inp-phone','inp-wa','inp-email','inp-budget','inp-msg'].forEach(id=>{
-    const el=document.getElementById(id);if(el){el.value='';el.disabled=false;}
-  });
-  const sc=document.getElementById('sameCheck');if(sc) sc.checked=false;
-  selectedType='';
-  document.querySelectorAll('.type-card').forEach(c=>c.classList.remove('selected'));
-  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
-  document.getElementById('stepSuccess').classList.remove('active');
-  document.getElementById('step1').classList.add('active');
-  document.getElementById('sdot1').classList.remove('completed');
-  document.getElementById('sdot1').classList.add('active');
-  ['sdot2','sdot3'].forEach(id=>document.getElementById(id).classList.remove('active','completed'));
-  ['sline1','sline2'].forEach(id=>document.getElementById(id).classList.remove('completed'));
-  window.scrollTo({top:0,behavior:'smooth'});
-}
+  function resetForm(){
+    ['inp-name','inp-phone','inp-wa','inp-email','inp-budget','inp-msg'].forEach(id=>{
+      const el=document.getElementById(id);if(el){el.value='';el.disabled=false;}
+    });
+    const sc=document.getElementById('sameCheck');if(sc) sc.checked=false;
+    selectedType='';
+    document.querySelectorAll('.type-card').forEach(c=>c.classList.remove('selected'));
+    document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+    document.getElementById('stepSuccess').classList.remove('active');
+    document.getElementById('step1').classList.add('active');
+    document.getElementById('sdot1').classList.remove('completed');
+    document.getElementById('sdot1').classList.add('active');
+    ['sdot2','sdot3'].forEach(id=>document.getElementById(id).classList.remove('active','completed'));
+    ['sline1','sline2'].forEach(id=>document.getElementById(id).classList.remove('completed'));
+    const card = document.getElementById('formCard');
+    if (card && window.innerWidth <= 880) {
+      card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
