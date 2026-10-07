@@ -132,8 +132,6 @@ async function trackMetaEvents(lead, subscribeEventId, purchaseEventId, purchase
   // 1. Browser Meta Pixel: Track Purchase & Subscribe
   if (typeof fbq === 'function') {
     try {
-      fbq('set', 'testEventCode', 'TEST50055');
-
       // PURCHASE EVENT
       fbq('track', 'Purchase', {
         content_name: lead.website_type || 'Website Inquiry',
