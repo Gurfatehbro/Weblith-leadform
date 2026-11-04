@@ -276,5 +276,5 @@ const server = http.createServer((req, res) => {
 
 server.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}/ (Form) and http://localhost:${PORT}/admin (Admin)`);
-  console.log(`Meta Conversions API active for Pixel: ${META_PIXEL_ID} & ${BACKUP_PIXEL_ID} (Events: Subscribe)`);
+  console.log(`Meta Conversions API active for Pixel: ${META_PIXEL_ID} (Events: Subscribe, PageView)`);
 });
