@@ -1,8 +1,7 @@
 const https = require('https');
 
 const META_PIXEL_ID = '3753260524823160';
-const BACKUP_PIXEL_ID = '1462211845727559';
-const META_CAPI_TOKEN = 'EAAdOWKUvli0BSxNl3ViX2mT1ZAqhPUslq087q43WH75VHSrvFlFm7LQPH9GpuJN0uskxS8xc8HII23DDFpaY3KKztkwhBRjR8zCtWPYiTkLfZC2I2KuCJZCh5ZCWeRfsuwamsoSg0Qvyp5rzWk6KZAd7cJejHtAB8duZAZA8a4TEzdsSEUDp9uQJiejAKNa2QZDZD';
+const META_CAPI_TOKEN = 'EAAdOWKUvli0BSwqLbmQeL5GdcAxZCcDQgqaCxwiFLvRkZA8vi6yAwoeXuJ0McL8Wghfa767yOtKZBZBWH7Uq82DCjamoisWFwwTWeBj6D9L3QFNaOHgb20r3B8wQpVwaQcttLtGmOeFqmUIMNCD9MyUwzoItNugjXRfiw64afGPWK80jZCd5b5tDUZBLk5aQZDZD';
 
 function postToMetaCapi(pixelId, payload) {
   return new Promise((resolve) => {
@@ -96,15 +95,12 @@ module.exports = async function handler(req, res) {
 
     const payload = JSON.stringify(payloadObj);
 
-    const [primaryRes, backupRes] = await Promise.all([
-      postToMetaCapi(META_PIXEL_ID, payload),
-      postToMetaCapi(BACKUP_PIXEL_ID, payload)
-    ]);
+    const primaryRes = await postToMetaCapi(META_PIXEL_ID, payload);
 
     return res.status(200).json({
       success: true,
       event_id: eventId,
-      meta: { primary: primaryRes, backup: backupRes }
+      meta: primaryRes
     });
   } catch (err) {
     return res.status(500).json({ success: false, error: err.message });
