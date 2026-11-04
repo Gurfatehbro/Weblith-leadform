@@ -350,7 +350,7 @@ async function submitForm(){
   const subscribeEventId = 'sub_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
 
   // Trigger Meta Pixel & Conversions API (Subscribe event only)
-  trackMetaEvents(lead, subscribeEventId);
+  await trackMetaEvents(lead, subscribeEventId);
 
   // Save to Supabase
   try{
