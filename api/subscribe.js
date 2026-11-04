@@ -1,8 +1,8 @@
 const https = require('https');
 const crypto = require('crypto');
 
-const META_PIXEL_ID = '1462211845727559';
-const BACKUP_PIXEL_ID = '1483479293829689';
+const META_PIXEL_ID = '3753260524823160';
+const BACKUP_PIXEL_ID = '1462211845727559';
 const META_CAPI_TOKEN = 'EAAdOWKUvli0BSxNl3ViX2mT1ZAqhPUslq087q43WH75VHSrvFlFm7LQPH9GpuJN0uskxS8xc8HII23DDFpaY3KKztkwhBRjR8zCtWPYiTkLfZC2I2KuCJZCh5ZCWeRfsuwamsoSg0Qvyp5rzWk6KZAd7cJejHtAB8duZAZA8a4TEzdsSEUDp9uQJiejAKNa2QZDZD';
 
 function hashSha256(val) {
@@ -80,9 +80,23 @@ module.exports = async function handler(req, res) {
       client_user_agent: req.headers['user-agent'] || ''
     };
 
-    const clientIp = req.headers['x-forwarded-for'] || req.socket?.remoteAddress;
+    const clientIp = (req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || req.socket?.remoteAddress || '').split(',')[0].trim();
     if (clientIp && clientIp !== '::1' && clientIp !== '127.0.0.1') {
-      userData.client_ip_address = clientIp.split(',')[0].trim();
+      userData.client_ip_address = clientIp;
+    }
+
+    if (lead.fbp) {
+      userData.fbp = lead.fbp;
+    } else if (req.headers.cookie) {
+      const match = req.headers.cookie.match(/(?:^|;\s*)_fbp=([^;]+)/);
+      if (match) userData.fbp = decodeURIComponent(match[1]);
+    }
+
+    if (lead.fbc) {
+      userData.fbc = lead.fbc;
+    } else if (req.headers.cookie) {
+      const match = req.headers.cookie.match(/(?:^|;\s*)_fbc=([^;]+)/);
+      if (match) userData.fbc = decodeURIComponent(match[1]);
     }
 
     if (lead.email) {

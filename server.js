@@ -7,8 +7,8 @@ const path = require('path');
 const PORT = 3000;
 const BASE_DIR = __dirname;
 
-const META_PIXEL_ID = '1462211845727559';
-const BACKUP_PIXEL_ID = '1483479293829689';
+const META_PIXEL_ID = '3753260524823160';
+const BACKUP_PIXEL_ID = '1462211845727559';
 const META_CAPI_TOKEN = 'EAAdOWKUvli0BSxNl3ViX2mT1ZAqhPUslq087q43WH75VHSrvFlFm7LQPH9GpuJN0uskxS8xc8HII23DDFpaY3KKztkwhBRjR8zCtWPYiTkLfZC2I2KuCJZCh5ZCWeRfsuwamsoSg0Qvyp5rzWk6KZAd7cJejHtAB8duZAZA8a4TEzdsSEUDp9uQJiejAKNa2QZDZD';
 
 const MIME_TYPES = {
@@ -114,6 +114,20 @@ async function sendMetaCapiEvents(lead, req) {
     if (fn) userData.fn = [fn];
   }
 
+  if (lead.fbp) {
+    userData.fbp = lead.fbp;
+  } else if (req.headers.cookie) {
+    const match = req.headers.cookie.match(/(?:^|;\s*)_fbp=([^;]+)/);
+    if (match) userData.fbp = decodeURIComponent(match[1]);
+  }
+
+  if (lead.fbc) {
+    userData.fbc = lead.fbc;
+  } else if (req.headers.cookie) {
+    const match = req.headers.cookie.match(/(?:^|;\s*)_fbc=([^;]+)/);
+    if (match) userData.fbc = decodeURIComponent(match[1]);
+  }
+
   const payloadObj = {
     data: [
       {
@@ -170,6 +184,18 @@ const server = http.createServer((req, res) => {
         const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
         if (clientIp && clientIp !== '::1' && clientIp !== '127.0.0.1') {
           userData.client_ip_address = clientIp.split(',')[0].trim();
+        }
+        if (bodyObj.fbp) {
+          userData.fbp = bodyObj.fbp;
+        } else if (req.headers.cookie) {
+          const match = req.headers.cookie.match(/(?:^|;\s*)_fbp=([^;]+)/);
+          if (match) userData.fbp = decodeURIComponent(match[1]);
+        }
+        if (bodyObj.fbc) {
+          userData.fbc = bodyObj.fbc;
+        } else if (req.headers.cookie) {
+          const match = req.headers.cookie.match(/(?:^|;\s*)_fbc=([^;]+)/);
+          if (match) userData.fbc = decodeURIComponent(match[1]);
         }
         const payloadObj = {
           data: [{

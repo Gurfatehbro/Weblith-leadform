@@ -1,7 +1,8 @@
 const SUPABASE_URL = 'https://hdgfmncycavoqjfeleem.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_ogNczthN8mfe4kIczXC7yA_GMrzwixl';
 
-const META_PIXEL_ID = '1462211845727559';
+const META_PIXEL_ID = '3753260524823160';
+const BACKUP_PIXEL_ID = '1462211845727559';
 const META_CAPI_TOKEN = 'EAAdOWKUvli0BSxNl3ViX2mT1ZAqhPUslq087q43WH75VHSrvFlFm7LQPH9GpuJN0uskxS8xc8HII23DDFpaY3KKztkwhBRjR8zCtWPYiTkLfZC2I2KuCJZCh5ZCWeRfsuwamsoSg0Qvyp5rzWk6KZAd7cJejHtAB8duZAZA8a4TEzdsSEUDp9uQJiejAKNa2QZDZD';
 
 function parseBudgetValue(budgetStr) {
@@ -37,10 +38,32 @@ function parseBudgetValue(budgetStr) {
   draw();
 })();
 
+function getMetaCookie(name) {
+  const match = document.cookie.match(new RegExp('(?:^|;\\s*)' + name + '=([^;]+)'));
+  return match ? decodeURIComponent(match[1]) : '';
+}
+
+function getTestEventCode() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const code = urlParams.get('test_event_code') || urlParams.get('test_code');
+  if (code) {
+    try { sessionStorage.setItem('wl_test_code', code); } catch(e){}
+    return code;
+  }
+  try {
+    const saved = sessionStorage.getItem('wl_test_code');
+    if (saved) return saved;
+  } catch(e){}
+  return 'TEST50055';
+}
+
 // Trigger PageView via CAPI with Event ID Deduplication
 (function trackPageViewOnLoad() {
   const pvId = window.wlPvEventId || ('pv_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9));
   window.wlPvEventId = pvId;
+  const testCode = getTestEventCode();
+  const fbp = getMetaCookie('_fbp');
+  const fbc = getMetaCookie('_fbc');
 
   // 1. Try server endpoint /api/pageview
   fetch('/api/pageview', {
@@ -49,11 +72,16 @@ function parseBudgetValue(budgetStr) {
     body: JSON.stringify({
       event_id: pvId,
       url: window.location.href,
-      test_event_code: 'TEST50055'
+      fbp: fbp,
+      fbc: fbc,
+      test_event_code: testCode
     })
   }).catch(() => {
     // 2. Direct fallback
     try {
+      const userData = { client_user_agent: navigator.userAgent };
+      if (fbp) userData.fbp = fbp;
+      if (fbc) userData.fbc = fbc;
       const payload = {
         data: [{
           event_name: 'PageView',
@@ -61,9 +89,9 @@ function parseBudgetValue(budgetStr) {
           event_id: pvId,
           action_source: 'website',
           event_source_url: window.location.href,
-          user_data: { client_user_agent: navigator.userAgent }
+          user_data: userData
         }],
-        test_event_code: 'TEST50055'
+        test_event_code: testCode
       };
       fetch(`https://graph.facebook.com/v19.0/${META_PIXEL_ID}/events?access_token=${META_CAPI_TOKEN}`, {
         method: 'POST',
@@ -192,6 +220,9 @@ async function trackMetaEvents(lead, subscribeEventId) {
   }
 
   // 2. Server-side CAPI via /api/subscribe
+  const testCode = getTestEventCode();
+  const fbp = getMetaCookie('_fbp');
+  const fbc = getMetaCookie('_fbc');
   let serverOk = false;
   try {
     const res = await fetch('/api/subscribe', {
@@ -200,7 +231,9 @@ async function trackMetaEvents(lead, subscribeEventId) {
       body: JSON.stringify({
         ...lead,
         event_id: subscribeEventId,
-        test_event_code: 'TEST50055'
+        fbp: fbp,
+        fbc: fbc,
+        test_event_code: testCode
       })
     });
     if (res.ok) {
@@ -227,6 +260,8 @@ async function trackMetaEvents(lead, subscribeEventId) {
       if (emHash) userData.em = [emHash];
       if (phHash) userData.ph = [phHash];
       if (fnHash) userData.fn = [fnHash];
+      if (fbp) userData.fbp = fbp;
+      if (fbc) userData.fbc = fbc;
 
       const payload = {
         data: [
@@ -244,7 +279,7 @@ async function trackMetaEvents(lead, subscribeEventId) {
             }
           }
         ],
-        test_event_code: 'TEST50055'
+        test_event_code: testCode
       };
 
       await fetch(`https://graph.facebook.com/v19.0/${META_PIXEL_ID}/events?access_token=${META_CAPI_TOKEN}`, {
