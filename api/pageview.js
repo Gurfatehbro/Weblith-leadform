@@ -89,8 +89,8 @@ module.exports = async function handler(req, res) {
       ]
     };
 
-    const testCode = body.test_event_code || 'TEST50055';
-    if (testCode) {
+    const testCode = body.test_event_code;
+    if (testCode && testCode !== 'TEST50055') {
       payloadObj.test_event_code = testCode;
     }
 

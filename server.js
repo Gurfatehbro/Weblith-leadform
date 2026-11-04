@@ -146,8 +146,8 @@ async function sendMetaCapiEvents(lead, req) {
     ]
   };
 
-  const testCode = lead.test_event_code || 'TEST50055';
-  if (testCode) {
+  const testCode = lead.test_event_code;
+  if (testCode && testCode !== 'TEST50055') {
     payloadObj.test_event_code = testCode;
   }
 
@@ -207,8 +207,10 @@ const server = http.createServer((req, res) => {
             user_data: userData
           }]
         };
-        const testCode = bodyObj.test_event_code || 'TEST50055';
-        if (testCode) payloadObj.test_event_code = testCode;
+        const testCode = bodyObj.test_event_code;
+        if (testCode && testCode !== 'TEST50055') {
+          payloadObj.test_event_code = testCode;
+        }
         const payload = JSON.stringify(payloadObj);
         const [primaryRes, backupRes] = await Promise.all([
           postToGraphApi(META_PIXEL_ID, payload),

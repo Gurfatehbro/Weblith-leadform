@@ -54,7 +54,7 @@ function getTestEventCode() {
     const saved = sessionStorage.getItem('wl_test_code');
     if (saved) return saved;
   } catch(e){}
-  return 'TEST50055';
+  return '';
 }
 
 // Trigger PageView via CAPI with Event ID Deduplication
@@ -90,9 +90,9 @@ function getTestEventCode() {
           action_source: 'website',
           event_source_url: window.location.href,
           user_data: userData
-        }],
-        test_event_code: testCode
+        }]
       };
+      if (testCode) payload.test_event_code = testCode;
       fetch(`https://graph.facebook.com/v19.0/${META_PIXEL_ID}/events?access_token=${META_CAPI_TOKEN}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -278,9 +278,9 @@ async function trackMetaEvents(lead, subscribeEventId) {
               value: 0
             }
           }
-        ],
-        test_event_code: testCode
+        ]
       };
+      if (testCode) payload.test_event_code = testCode;
 
       await fetch(`https://graph.facebook.com/v19.0/${META_PIXEL_ID}/events?access_token=${META_CAPI_TOKEN}`, {
         method: 'POST',
