@@ -2,16 +2,16 @@ const SUPABASE_URL = 'https://hdgfmncycavoqjfeleem.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_ogNczthN8mfe4kIczXC7yA_GMrzwixl';
 
 const META_PIXEL_ID = '1462211845727559';
-const META_CAPI_TOKEN = 'EAGVccZABOaOABSgREnJIl0ZBZBhy3wMRXpWGAutZBhaqKMI6sIIYhY3bCv7obc4yZChH17XujjJyyqso1F7AYPMVZAkwZAoLurHrPiHgBEaZCZA3JgWzk3CSsHRdx3e8Vc3V6h3ZCGhRCUZCmYFZBGae8D7zZA1ddDjknIaAXcURJUwOWx60lf8aNYZAmAk9ZBt7z0zRAbC3wZDZD';
+const META_CAPI_TOKEN = 'EAAdOWKUvli0BSxNl3ViX2mT1ZAqhPUslq087q43WH75VHSrvFlFm7LQPH9GpuJN0uskxS8xc8HII23DDFpaY3KKztkwhBRjR8zCtWPYiTkLfZC2I2KuCJZCh5ZCWeRfsuwamsoSg0Qvyp5rzWk6KZAd7cJejHtAB8duZAZA8a4TEzdsSEUDp9uQJiejAKNa2QZDZD';
 
 function parseBudgetValue(budgetStr) {
-  if (!budgetStr) return 10000;
+  if (!budgetStr) return 3000;
   const numbers = String(budgetStr).replace(/,/g, '').match(/\d+/g);
   if (numbers && numbers.length > 0) {
     const val = parseInt(numbers[0], 10);
-    return isNaN(val) || val <= 0 ? 10000 : val;
+    return isNaN(val) || val <= 0 ? 3000 : val;
   }
-  return 10000;
+  return 3000;
 }
 
 // Canvas BG
@@ -35,6 +35,43 @@ function parseBudgetValue(budgetStr) {
     requestAnimationFrame(draw);
   }
   draw();
+})();
+
+// Trigger PageView via CAPI with Event ID Deduplication
+(function trackPageViewOnLoad() {
+  const pvId = window.wlPvEventId || ('pv_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9));
+  window.wlPvEventId = pvId;
+
+  // 1. Try server endpoint /api/pageview
+  fetch('/api/pageview', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      event_id: pvId,
+      url: window.location.href,
+      test_event_code: 'TEST50055'
+    })
+  }).catch(() => {
+    // 2. Direct fallback
+    try {
+      const payload = {
+        data: [{
+          event_name: 'PageView',
+          event_time: Math.floor(Date.now() / 1000),
+          event_id: pvId,
+          action_source: 'website',
+          event_source_url: window.location.href,
+          user_data: { client_user_agent: navigator.userAgent }
+        }],
+        test_event_code: 'TEST50055'
+      };
+      fetch(`https://graph.facebook.com/v19.0/${META_PIXEL_ID}/events?access_token=${META_CAPI_TOKEN}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    } catch (e) {}
+  });
 })();
 
 let selectedType = '';
@@ -68,6 +105,17 @@ function selectType(card){
   card.classList.add('selected');
   selectedType=card.getAttribute('data-value');
   document.getElementById('err-type').textContent='';
+
+  const customWrap = document.getElementById('customTypeWrap');
+  if (customWrap) {
+    if (selectedType === 'Write your own') {
+      customWrap.style.display = 'block';
+      const customInp = document.getElementById('inp-custom-type');
+      if (customInp) customInp.focus();
+    } else {
+      customWrap.style.display = 'none';
+    }
+  }
 }
 
 function showErr(id,msg){const e=document.getElementById(id);if(e)e.textContent=msg;}
@@ -128,19 +176,10 @@ async function sha256Browser(str) {
   }
 }
 
-async function trackMetaEvents(lead, subscribeEventId, purchaseEventId, purchaseValue) {
-  // 1. Browser Meta Pixel: Track Purchase & Subscribe
+async function trackMetaEvents(lead, subscribeEventId) {
+  // 1. Browser Meta Pixel: Track Subscribe Only
   if (typeof fbq === 'function') {
     try {
-      // PURCHASE EVENT
-      fbq('track', 'Purchase', {
-        content_name: lead.website_type || 'Website Inquiry',
-        currency: 'INR',
-        value: purchaseValue
-      }, { eventID: purchaseEventId });
-      console.log('Meta Pixel: Purchase event fired (Value:', purchaseValue, 'INR, EventID:', purchaseEventId, ')');
-
-      // SUBSCRIBE EVENT
       fbq('track', 'Subscribe', {
         content_name: lead.website_type || 'Website Inquiry',
         currency: 'INR',
@@ -161,8 +200,6 @@ async function trackMetaEvents(lead, subscribeEventId, purchaseEventId, purchase
       body: JSON.stringify({
         ...lead,
         event_id: subscribeEventId,
-        purchase_event_id: purchaseEventId,
-        purchase_value: purchaseValue,
         test_event_code: 'TEST50055'
       })
     });
@@ -194,19 +231,6 @@ async function trackMetaEvents(lead, subscribeEventId, purchaseEventId, purchase
       const payload = {
         data: [
           {
-            event_name: 'Purchase',
-            event_time: Math.floor(Date.now() / 1000),
-            event_id: purchaseEventId,
-            action_source: 'website',
-            event_source_url: window.location.href,
-            user_data: userData,
-            custom_data: {
-              content_name: lead.website_type || 'Website Inquiry',
-              currency: 'INR',
-              value: purchaseValue
-            }
-          },
-          {
             event_name: 'Subscribe',
             event_time: Math.floor(Date.now() / 1000),
             event_id: subscribeEventId,
@@ -228,7 +252,7 @@ async function trackMetaEvents(lead, subscribeEventId, purchaseEventId, purchase
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
-      console.log('Meta CAPI direct fallback sent successfully.');
+      console.log('Meta CAPI direct fallback sent successfully (Subscribe).');
     } catch (e) {
       console.error('Direct Meta CAPI fallback error:', e);
     }
@@ -241,8 +265,36 @@ async function submitForm(){
   let ok=true;
   clearErr('err-type');clearErr('err-budget');markErr('inp-budget',false);
   if(!selectedType){showErr('err-type','Please select a website type.');ok=false;}
-  if(!budget){showErr('err-budget','Please enter your budget.');markErr('inp-budget',true);ok=false;}
+  if(!budget){
+    showErr('err-budget','Please enter your budget (Minimum ₹3,000).');
+    markErr('inp-budget',true);
+    ok=false;
+  } else {
+    const cleanNumbers = budget.replace(/,/g, '');
+    let numericVal = 0;
+    const match = cleanNumbers.toLowerCase().match(/(\d+(?:\.\d+)?)\s*(k|thousand|lakh|lac)?/);
+    if (match) {
+      let num = parseFloat(match[1]);
+      const unit = match[2];
+      if (unit === 'k' || unit === 'thousand') num *= 1000;
+      else if (unit === 'lakh' || unit === 'lac') num *= 100000;
+      numericVal = num;
+    }
+    if (numericVal > 0 && numericVal < 3000) {
+      showErr('err-budget','Minimum budget is ₹3,000.');
+      markErr('inp-budget',true);
+      ok=false;
+    }
+  }
   if(!ok) return;
+
+  let finalType = selectedType;
+  if (selectedType === 'Write your own') {
+    const customInpVal = (document.getElementById('inp-custom-type')?.value || '').trim();
+    if (customInpVal) {
+      finalType = `Write your own: ${customInpVal}`;
+    }
+  }
 
   const btn=document.getElementById('submitBtn');
   const txt=document.getElementById('submitBtnText');
@@ -256,17 +308,15 @@ async function submitForm(){
     phone:document.getElementById('inp-phone').value.trim(),
     whatsapp:document.getElementById('inp-wa').value.trim(),
     email:document.getElementById('inp-email').value.trim(),
-    website_type:selectedType,
+    website_type:finalType,
     budget:budget,
     message:message
   };
 
   const subscribeEventId = 'sub_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
-  const purchaseEventId = 'pur_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
-  const purchaseValue = parseBudgetValue(budget);
 
-  // Trigger Meta Pixel & Conversions API (Purchase & Subscribe events)
-  trackMetaEvents(lead, subscribeEventId, purchaseEventId, purchaseValue);
+  // Trigger Meta Pixel & Conversions API (Subscribe event only)
+  trackMetaEvents(lead, subscribeEventId);
 
   // Save to Supabase
   try{
@@ -310,7 +360,7 @@ async function submitForm(){
   if (waBtn) {
     const cleanWa = (lead.whatsapp || '').replace(/\D/g, '');
     const msg = encodeURIComponent(`Hi Weblith! I just submitted a website quote request for a ${lead.website_type} (Budget: ${lead.budget}). My name is ${lead.name}.`);
-    waBtn.href = `https://wa.me/919876543210?text=${msg}`;
+    waBtn.href = `https://wa.me/919463537471?text=${msg}`;
   }
 
   const card = document.getElementById('formCard');
@@ -328,9 +378,11 @@ async function submitForm(){
   }
 
   function resetForm(){
-    ['inp-name','inp-phone','inp-wa','inp-email','inp-budget','inp-msg'].forEach(id=>{
+    ['inp-name','inp-phone','inp-wa','inp-email','inp-budget','inp-msg','inp-custom-type'].forEach(id=>{
       const el=document.getElementById(id);if(el){el.value='';el.disabled=false;}
     });
+    const customWrap = document.getElementById('customTypeWrap');
+    if (customWrap) customWrap.style.display = 'none';
     const sc=document.getElementById('sameCheck');if(sc) sc.checked=false;
     selectedType='';
     document.querySelectorAll('.type-card').forEach(c=>c.classList.remove('selected'));

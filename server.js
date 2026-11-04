@@ -9,7 +9,7 @@ const BASE_DIR = __dirname;
 
 const META_PIXEL_ID = '1462211845727559';
 const BACKUP_PIXEL_ID = '1483479293829689';
-const META_CAPI_TOKEN = 'EAGVccZABOaOABSgREnJIl0ZBZBhy3wMRXpWGAutZBhaqKMI6sIIYhY3bCv7obc4yZChH17XujjJyyqso1F7AYPMVZAkwZAoLurHrPiHgBEaZCZA3JgWzk3CSsHRdx3e8Vc3V6h3ZCGhRCUZCmYFZBGae8D7zZA1ddDjknIaAXcURJUwOWx60lf8aNYZAmAk9ZBt7z0zRAbC3wZDZD';
+const META_CAPI_TOKEN = 'EAAdOWKUvli0BSxNl3ViX2mT1ZAqhPUslq087q43WH75VHSrvFlFm7LQPH9GpuJN0uskxS8xc8HII23DDFpaY3KKztkwhBRjR8zCtWPYiTkLfZC2I2KuCJZCh5ZCWeRfsuwamsoSg0Qvyp5rzWk6KZAd7cJejHtAB8duZAZA8a4TEzdsSEUDp9uQJiejAKNa2QZDZD';
 
 const MIME_TYPES = {
   '.html': 'text/html; charset=UTF-8',
@@ -40,13 +40,13 @@ function normalizePhone(phone) {
 }
 
 function parseBudget(budgetStr) {
-  if (!budgetStr) return 10000;
+  if (!budgetStr) return 3000;
   const numbers = String(budgetStr).replace(/,/g, '').match(/\d+/g);
   if (numbers && numbers.length > 0) {
     const val = parseInt(numbers[0], 10);
-    return isNaN(val) || val <= 0 ? 10000 : val;
+    return isNaN(val) || val <= 0 ? 3000 : val;
   }
-  return 10000;
+  return 3000;
 }
 
 function postToGraphApi(pixelId, payload) {
@@ -87,8 +87,6 @@ function postToGraphApi(pixelId, payload) {
 async function sendMetaCapiEvents(lead, req) {
   const eventTime = Math.floor(Date.now() / 1000);
   const subscribeEventId = lead.event_id || ('sub_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8));
-  const purchaseEventId = lead.purchase_event_id || ('pur_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8));
-  const purchaseValue = lead.purchase_value || parseBudget(lead.budget);
 
   const userData = {
     client_user_agent: req.headers['user-agent'] || ''
@@ -118,19 +116,6 @@ async function sendMetaCapiEvents(lead, req) {
 
   const payloadObj = {
     data: [
-      {
-        event_name: 'Purchase',
-        event_time: eventTime,
-        event_id: purchaseEventId,
-        action_source: 'website',
-        event_source_url: req.headers['referer'] || 'http://localhost:3000/form',
-        user_data: userData,
-        custom_data: {
-          content_name: lead.website_type || 'Website Inquiry',
-          currency: 'INR',
-          value: purchaseValue
-        }
-      },
       {
         event_name: 'Subscribe',
         event_time: eventTime,
@@ -171,6 +156,48 @@ function serveFile(filePath, res) {
 
 const server = http.createServer((req, res) => {
   let reqPath = decodeURI(req.url.split('?')[0]);
+
+  // Conversions API PageView endpoint
+  if (req.method === 'POST' && reqPath === '/api/pageview') {
+    let body = '';
+    req.on('data', chunk => { body += chunk; });
+    req.on('end', async () => {
+      try {
+        const bodyObj = JSON.parse(body || '{}');
+        const eventTime = Math.floor(Date.now() / 1000);
+        const eventId = bodyObj.event_id || ('pv_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8));
+        const userData = { client_user_agent: req.headers['user-agent'] || '' };
+        const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+        if (clientIp && clientIp !== '::1' && clientIp !== '127.0.0.1') {
+          userData.client_ip_address = clientIp.split(',')[0].trim();
+        }
+        const payloadObj = {
+          data: [{
+            event_name: 'PageView',
+            event_time: eventTime,
+            event_id: eventId,
+            action_source: 'website',
+            event_source_url: req.headers['referer'] || bodyObj.url || 'http://localhost:3000/form',
+            user_data: userData
+          }]
+        };
+        const testCode = bodyObj.test_event_code || 'TEST50055';
+        if (testCode) payloadObj.test_event_code = testCode;
+        const payload = JSON.stringify(payloadObj);
+        const [primaryRes, backupRes] = await Promise.all([
+          postToGraphApi(META_PIXEL_ID, payload),
+          postToGraphApi(BACKUP_PIXEL_ID, payload)
+        ]);
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true, meta: { primary: primaryRes, backup: backupRes } }));
+      } catch (err) {
+        console.error('Error in /api/pageview:', err);
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, error: err.message }));
+      }
+    });
+    return;
+  }
 
   // Conversions API endpoint
   if (req.method === 'POST' && reqPath === '/api/subscribe') {
@@ -229,5 +256,5 @@ const server = http.createServer((req, res) => {
 
 server.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}/ (Form) and http://localhost:${PORT}/admin (Admin)`);
-  console.log(`Meta Conversions API active for Pixel: ${META_PIXEL_ID} & ${BACKUP_PIXEL_ID} (Events: Purchase, Subscribe)`);
+  console.log(`Meta Conversions API active for Pixel: ${META_PIXEL_ID} & ${BACKUP_PIXEL_ID} (Events: Subscribe)`);
 });

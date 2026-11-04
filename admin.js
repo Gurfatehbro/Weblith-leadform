@@ -194,10 +194,13 @@ function typeBadge(type) {
   const m = { 
     'Business Website': 'badge-purple', 
     'Portfolio': 'badge-cyan', 
+    'Write your own': 'badge-amber',
     'Dynamic Website': 'badge-pink', 
     'E-commerce': 'badge-green' 
   };
-  return '<span class="badge ' + (m[type] || 'badge-purple') + '">' + escapeHtml(type || '-') + '</span>';
+  const isCustom = type && (type.includes('Write your own') || type.includes('Custom'));
+  const badgeClass = isCustom ? 'badge-amber' : (m[type] || 'badge-purple');
+  return '<span class="badge ' + badgeClass + '">' + escapeHtml(type || '-') + '</span>';
 }
 
 function fmtDate(iso) {
@@ -214,7 +217,7 @@ function filterLeads() {
   const filtered = allLeads.filter(l => {
     const text = [l.name, l.phone, l.whatsapp, l.email, l.website_type, l.budget, l.message].join(' ').toLowerCase();
     const matchSearch = !search || text.includes(search);
-    const matchType = !filterType || l.website_type === filterType;
+    const matchType = !filterType || l.website_type === filterType || (filterType === 'Write your own' && l.website_type && l.website_type.includes('Write your own'));
     return matchSearch && matchType;
   });
 

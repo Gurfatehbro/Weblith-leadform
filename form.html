@@ -11,6 +11,7 @@
 
   <!-- Facebook Pixel Code -->
   <script>
+    window.wlPvEventId = 'pv_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9);
     !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
     n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
     n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
@@ -18,10 +19,12 @@
     document,'script','https://connect.facebook.net/en_US/fbevents.js');
 
     fbq('init', '1462211845727559');
-    fbq('track', 'PageView');
+    fbq('init', '1483479293829689');
+    fbq('track', 'PageView', {}, { eventID: window.wlPvEventId });
   </script>
   <noscript>
     <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1462211845727559&ev=PageView&noscript=1" />
+    <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1483479293829689&ev=PageView&noscript=1" />
   </noscript>
   <!-- End Facebook Pixel Code -->
 </head>
@@ -183,10 +186,10 @@
                   <div class="type-name">Portfolio</div>
                   <div class="type-desc">Showcase your personal work &amp; brand</div>
                 </div>
-                <div class="type-card" onclick="selectType(this)" data-value="Dynamic Website">
-                  <div class="type-emoji">&#9889;</div>
-                  <div class="type-name">Dynamic Web App</div>
-                  <div class="type-desc">Custom features, CMS &amp; portal</div>
+                <div class="type-card" onclick="selectType(this)" data-value="Write your own">
+                  <div class="type-emoji">&#9997;&#65039;</div>
+                  <div class="type-name">Write your own</div>
+                  <div class="type-desc">Custom requirement &amp; idea</div>
                 </div>
                 <div class="type-card" onclick="selectType(this)" data-value="E-commerce">
                   <div class="type-emoji">&#128717;</div>
@@ -194,23 +197,20 @@
                   <div class="type-desc">Online store, checkout &amp; payments</div>
                 </div>
               </div>
+              <div id="customTypeWrap" style="display:none; margin-top:0.65rem;">
+                <div class="input-wrapper">
+                  <span class="input-icon">&#9998;</span>
+                  <input class="input" type="text" id="inp-custom-type" placeholder="Specify your website type (e.g. Real Estate, Blog, Booking...)"/>
+                </div>
+              </div>
               <span class="field-error" id="err-type"></span>
             </div>
 
             <div class="field">
-              <label class="field-label" for="inp-budget">Approximate Budget *</label>
-              <div class="budget-wrap">
-                <div class="input-wrapper">
-                  <span class="input-icon" style="color:var(--primary);font-weight:700;font-size:1.15rem;">&#8377;</span>
-                  <input class="input" type="text" id="inp-budget" placeholder="e.g. 15,000 or 25,000 - 50,000" inputmode="text"/>
-                </div>
-                <div class="chips">
-                  <button type="button" class="chip" onclick="setBudget(this,'Under Rs.10,000')">Under 10K</button>
-                  <button type="button" class="chip" onclick="setBudget(this,'Rs.10,000 - Rs.25,000')">10K - 25K</button>
-                  <button type="button" class="chip" onclick="setBudget(this,'Rs.25,000 - Rs.50,000')">25K - 50K</button>
-                  <button type="button" class="chip" onclick="setBudget(this,'Rs.50,000 - Rs.1,00,000')">50K - 1 Lakh</button>
-                  <button type="button" class="chip" onclick="setBudget(this,'Rs.1,00,000+')">1 Lakh+</button>
-                </div>
+              <label class="field-label" for="inp-budget">Approximate Budget * <span style="font-size:0.8rem;font-weight:600;color:var(--primary);margin-left:4px;">(Minimum &#8377;3,000)</span></label>
+              <div class="input-wrapper">
+                <span class="input-icon" style="color:var(--primary);font-weight:700;font-size:1.15rem;">&#8377;</span>
+                <input class="input" type="text" id="inp-budget" placeholder="Enter budget (Minimum ₹3,000)" inputmode="numeric"/>
               </div>
               <span class="field-error" id="err-budget"></span>
             </div>
@@ -240,7 +240,7 @@
               
               <div class="success-box" id="successDetails"></div>
 
-              <a href="https://wa.me/919876543210?text=Hi%20Weblith,%20I%20just%20submitted%20a%20website%20quote%20request!" target="_blank" rel="noopener" class="success-wa-action" id="successWaBtn">
+              <a href="https://wa.me/919463537471?text=Hi%20Weblith,%20I%20just%20submitted%20a%20website%20quote%20request!" target="_blank" rel="noopener" class="success-wa-action" id="successWaBtn">
                 &#128172; Chat on WhatsApp Directly
               </a>
 
